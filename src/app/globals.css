@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+/* ── Saans (primary sans, matches reference itsjay.us) ───────────────── */
+@font-face {
+  font-family: "Saans";
+  src: url("/fonts/Saans-TRIAL-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saans";
+  src: url("/fonts/Saans-TRIAL-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saans";
+  src: url("/fonts/Saans-TRIAL-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saans";
+  src: url("/fonts/Saans-TRIAL-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saans";
+  src: url("/fonts/Saans-TRIAL-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saans";
+  src: url("/fonts/Saans-TRIAL-Heavy.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Saans Mono (small tracked taglines) ─────────────────────────────── */
+@font-face {
+  font-family: "Saans Mono";
+  src: url("/fonts/SaansMono-TRIAL-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saans Mono";
+  src: url("/fonts/SaansMono-TRIAL-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Respira (legacy accent, retained for not-yet-migrated sections) ──── */
+@font-face {
+  font-family: "Respira";
+  src: url("/fonts/Respira-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme inline {
+  --color-background: #f5f5f5;
+  --color-foreground: #171717;
+  --color-muted: #737373;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-card: #171717;
+  --color-accent: #f0ebe3;
+
+  --font-display: "Respira", serif;
+  --font-sans: "Saans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Saans Mono", ui-monospace, monospace;
+
+  /* Reference uses a custom 3xl breakpoint (utilities like 3xl:w-14, 3xl:px-3). */
+  --breakpoint-3xl: 1920px;
+}
+
+:root {
+  --background: #f5f5f5;
+  --foreground: #171717;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #171717;
+  color: #171717;
+  overflow-x: hidden;
+}
+
+body {
+  background: #171717;
+  color: #171717;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Lenis scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Selection */
+::selection {
+  background: rgba(23, 23, 23, 0.12);
+  color: #171717;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* Clip reveal utility */
+.clip-reveal {
+  clip-path: inset(0 0 100% 0);
+}
+
+/* Tech-stack logo grid: hovered cell inverts its (dark) logo to white. */
+.invert {
+  filter: invert(1);
+}
+
+/* Scroll line animation */
+@keyframes scroll-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-scroll-line {
+  animation: scroll-line 1.5s ease-in-out infinite;
+}
+
+/* Noise texture overlay */
+.noise::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
