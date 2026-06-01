@@ -15,6 +15,7 @@ export function WorkIndex() {
         </RevealText>
         <div className="mt-3 lg:mt-5">
           <RevealText
+            as="h1"
             className="text-[clamp(48px,7.5vw,200px)] font-bold uppercase leading-[0.8] tracking-tight"
             delay={0.05}
           >

@@ -5,7 +5,6 @@ import { InitialLoadProvider } from '@/components/providers/InitialLoadProvider'
 import { FooterProvider } from '@/components/providers/FooterProvider'
 import { LoadingScreen } from '@/components/layout/LoadingScreen'
 import { Header } from '@/components/layout/Header'
-import { FloatingNav } from '@/components/layout/FloatingNav'
 import { Footer } from '@/components/sections/Footer'
 
 export const metadata: Metadata = {
@@ -34,7 +33,6 @@ export default function RootLayout({
             <LenisProvider>
               <LoadingScreen />
               <Header />
-              <FloatingNav />
               {children}
               <Footer />
             </LenisProvider>
