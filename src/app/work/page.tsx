@@ -1,21 +1,11 @@
 import type { Metadata } from 'next'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/sections/Footer'
-import { WorkGrid } from '@/components/sections/WorkGrid'
+import { WorkIndex } from '@/components/sections/WorkIndex'
 
 export const metadata: Metadata = {
-  title: 'Work — Ilias Chakri',
-  description: 'Selected projects by Ilias Chakri — Brand Identity, Motion Design, and Digital/Print.',
+  title: 'Work | Jason Zubiate',
+  description: 'Selected design engineering work — portfolios, products, and brand sites.',
 }
 
 export default function WorkPage() {
-  return (
-    <>
-      <Navbar />
-      <main className="pt-24 lg:pt-28">
-        <WorkGrid />
-      </main>
-      <Footer />
-    </>
-  )
+  return <WorkIndex />
 }
