@@ -16,22 +16,13 @@ export const content = {
   },
   caseStudy: {
     backToWorkLabel: 'Back to work',
-    yearLabel: 'Year',
-    servicesLabel: 'Services',
-    summaryLabel: 'Summary',
     visitSiteLabel: 'Visit site',
-    specLabels: {
-      client: 'Client',
-      role: 'Role',
-      agency: 'Agency',
-      period: 'Year / Market',
-    },
     viaConnector: 'via',
-    spineParts: {
-      brief: 'Part 01 / The Brief / Context',
-      challenge: 'Part 02 / The Challenge',
-      approach: 'Part 03 / The Approach',
-      work: 'Part 04 / The Work / Ecosystem',
+    metaCard: {
+      clientLabel: 'Client & year',
+      roleLabel: 'Role',
+      summaryLabel: 'Summary',
+      watchFilmLabel: 'Watch film ↓',
     },
     addonLabels: {
       aiPipeline: 'AI Pipeline',
@@ -40,7 +31,8 @@ export const content = {
       oohInMarket: 'OOH In Market',
       payoff: 'Payoff',
     },
-    creditsHeading: 'Credits',
+    creditsDetailsHeading: 'Credits & details',
+    teamHeading: 'Team',
     toolsHeading: 'Tools',
     formatsHeading: 'Formats',
     timelineHeading: 'Timeline',

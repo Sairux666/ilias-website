@@ -79,15 +79,31 @@
   doesn't supply them. Checked at 375, 768, 1024, 1440, 1920, 2560: no
   horizontal overflow, no clipped text, all sections render.
 
+- Case study page redesigned to match WPP's 2-column editorial layout. Whole
+  page now sits in a centered max-w-7xl container so it stays balanced on
+  wide screens instead of hugging the left edge. New 3-column dark metadata
+  card below the title: Client & Year, Role (pills), Summary with a "Watch
+  film" link that smooth-scrolls to the video player (or "Visit site" for
+  projects that link out instead). The "Part 01 / 02 / 03 / 04" eyebrow
+  labels are gone. Story sections now read as heading-left, copy-right
+  pairs with a divider line, collapsing to one column on mobile. Credits
+  footer restructured the same way: "Credits & details" heading on the
+  left, Tools/Formats/Timeline spec list plus the full team credit
+  paragraph on the right. All copy pulled from src/data/content.ts and
+  src/data/work.ts, nothing hardcoded. Checked at 375, 768, 1024, 1440,
+  1920, 2560 with Playwright: no horizontal overflow, no console errors,
+  mobile story sections stack cleanly, watch film link scrolls to the
+  right section.
+
 ## IN PROGRESS
 - Nothing. Session ended cleanly.
   (If the browser check showed something half done, replace this line with it.)
 
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
-   breakpoints. Still needs final clearance sign off from VML before going
-   fully live, and the homepage card (see next item) still points at
-   placeholder projects instead of this one.
+   breakpoints in the new WPP-style layout. Still needs final clearance
+   sign off from VML before going fully live, and the homepage card (see
+   next item) still points at placeholder projects instead of this one.
 2. Homepage project cards. Six cards, static poster images, no autoplaying
    video. Cards link to their project page once it exists. Currently still
    showing the reference owner's projects: Jazmin Wong, Trackstack, Kick &

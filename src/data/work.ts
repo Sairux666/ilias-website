@@ -100,9 +100,18 @@ export const workProjects: WorkProject[] = [
     icon: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
     cover: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
     previewVideo: "/portfolio/fanta/fanta-promo-campaign-15sec-film.mp4",
-    services: ["Art Direction", "Motion Design", "Key Visual", "AI Animation"],
+    services: [
+      "Art Direction",
+      "Key Visuals",
+      "Campaign Design",
+      "Motion Design",
+      "AI Animation",
+      "OOH & DOOH",
+      "Retail & POS",
+      "Adaptations",
+    ],
     summary:
-      "A national scan and win promo for Fanta 1.5L bottles, taken from blank page to key visual and launch film in one week.",
+      "National on-pack promo for Fanta 1.5L bottles giving away scooters, vouchers, and phone credit. Created the master key visual, rolled out the design across billboards and corner stores, and built the 15-second launch film blending AI animation with kinetic motion.",
     gallery: [],
     heroAsset: {
       kind: "image",
@@ -111,7 +120,6 @@ export const workProjects: WorkProject[] = [
     },
     spec: {
       client: "Fanta (The Coca-Cola Company)",
-      role: "Art Direction / Motion",
       agency: "VML",
     },
     spine: {

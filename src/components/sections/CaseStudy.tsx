@@ -4,8 +4,11 @@ import Link from 'next/link'
 import { RevealText } from '@/components/ui/RevealText'
 import { VimeoEmbed } from '@/components/ui/VimeoEmbed'
 import { VideoPlayer } from '@/components/ui/VideoPlayer'
+import { useLenis } from '@/components/providers/LenisProvider'
 import { content } from '@/data/content'
 import type { WorkProject, LocalMediaItem, MediaItem, SpineSection, AddonSection } from '@/data/work'
+
+const FILM_ANCHOR_ID = 'case-study-film'
 
 function ArrowLeft() {
   return (
@@ -89,43 +92,82 @@ function MediaRenderer({ item, className }: { item: MediaItem; className: string
 const eyebrowClass =
   'text-xs lg:text-[clamp(14px,0.8vw,18px)] text-neutral-400 uppercase font-medium tracking-wider'
 
-/* Top 4-column spec header: Client / Role / Agency / Year / Market. Collapses
- * entirely when the project has no spec data, and each column only appears
- * when its own field is filled in, so partial data never leaves a gap. */
-function SpecHeader({ project }: { project: WorkProject }) {
-  const spec = project.spec
-  if (!spec || !(spec.client || spec.role || spec.agency || spec.market)) return null
+function WatchFilmLink({ label }: { label: string }) {
+  const { scrollTo } = useLenis()
+  return (
+    <button
+      type="button"
+      onClick={() => scrollTo(`#${FILM_ANCHOR_ID}`, { offset: -40 })}
+      className="text-xs lg:text-[clamp(14px,0.8vw,18px)] text-neutral-400 uppercase font-medium tracking-wider flex items-center gap-1 hover:underline hover:text-neutral-100 transition-all duration-300 text-left"
+    >
+      {label}
+    </button>
+  )
+}
 
-  const labels = content.caseStudy.specLabels
-  const agency = spec.agency
+/* 3-column metadata card below the title: Client & Year, Role (pills), and
+ * Summary with an optional action link (Visit site, or Watch film when the
+ * project has a hosted-video film further down the page). Client & Year
+ * only renders when the project supplies spec.client, so portfolio-style
+ * projects without a client still get a clean 2-column card. */
+function MetaCard({ project, hasFilm }: { project: WorkProject; hasFilm: boolean }) {
+  const labels = content.caseStudy.metaCard
+  const spec = project.spec
+  const agency = spec?.agency
     ? spec.agencyVia
       ? `${spec.agency} ${content.caseStudy.viaConnector} ${spec.agencyVia}`
       : spec.agency
     : undefined
-  const period = [project.year, spec.market].filter(Boolean).join(' / ')
-
-  const columns = [
-    { label: labels.client, value: spec.client },
-    { label: labels.role, value: spec.role },
-    { label: labels.agency, value: agency },
-    { label: labels.period, value: period || undefined },
-  ].filter((c): c is { label: string; value: string } => Boolean(c.value))
-
-  if (columns.length === 0) return null
+  const clientSubtext = agency ? `${project.year} / ${content.caseStudy.viaConnector} ${agency}` : project.year
 
   return (
-    <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 lg:gap-x-5 px-4 lg:px-5">
-      {columns.map((c) => (
-        <div key={c.label} className="flex flex-col gap-3 min-w-0">
-          <RevealText className={eyebrowClass}>{c.label}</RevealText>
+    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 px-6 lg:px-10 py-8 lg:py-10 rounded-lg lg:rounded-xl bg-neutral-800">
+      {spec?.client && (
+        <div className="flex flex-col gap-3 min-w-0">
+          <RevealText className={eyebrowClass}>{labels.clientLabel}</RevealText>
           <RevealText
-            className="text-[clamp(18px,1.4vw,32px)] text-neutral-100 font-semibold tracking-tight leading-[1.1] break-words"
+            className="text-[clamp(18px,1.3vw,26px)] text-neutral-100 font-semibold tracking-tight leading-[1.15] break-words"
             delay={0.05}
           >
-            {c.value}
+            {spec.client}
+          </RevealText>
+          <RevealText className="text-sm text-neutral-400 font-medium" delay={0.08}>
+            {clientSubtext}
           </RevealText>
         </div>
-      ))}
+      )}
+
+      <div className="flex flex-col gap-3 min-w-0">
+        <RevealText className={eyebrowClass}>{labels.roleLabel}</RevealText>
+        <TagList items={project.services} />
+      </div>
+
+      <div className="flex flex-col gap-3 min-w-0">
+        <RevealText className={eyebrowClass}>{labels.summaryLabel}</RevealText>
+        <RevealText
+          className="text-sm lg:text-base text-neutral-300 font-medium leading-[1.5]"
+          delay={0.05}
+        >
+          {project.summary}
+        </RevealText>
+        {project.visitUrl ? (
+          <RevealText delay={0.1}>
+            <a
+              href={project.visitUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs lg:text-[clamp(14px,0.8vw,18px)] text-neutral-400 uppercase font-medium tracking-wider flex items-center gap-1 hover:underline hover:text-neutral-100 transition-all duration-300"
+            >
+              {content.caseStudy.visitSiteLabel}
+              <ArrowUpRight />
+            </a>
+          </RevealText>
+        ) : hasFilm ? (
+          <RevealText delay={0.1}>
+            <WatchFilmLink label={labels.watchFilmLabel} />
+          </RevealText>
+        ) : null}
+      </div>
     </div>
   )
 }
@@ -133,31 +175,39 @@ function SpecHeader({ project }: { project: WorkProject }) {
 const heroMediaClass = 'w-full h-[220px] lg:h-[clamp(500px,55vw,1100px)]'
 const spineMediaClass = 'w-full h-[200px] lg:h-[clamp(400px,45vw,900px)]'
 
-/* One part of the 4-part spine (Brief, Challenge, Approach, Work/Ecosystem).
- * Collapses when the project supplies no heading, body or media for it. */
-function SpinePart({ label, section }: { label: string; section?: SpineSection }) {
+/* One part of the case study spine (Brief, Challenge, Approach, Work), laid
+ * out as a WPP-style 2-column editorial block: heading on the left, story
+ * copy (and optional media) on the right. Collapses when the project
+ * supplies no heading, body or media for it. anchorId lets the metadata
+ * card's "Watch film" link scroll straight to the part carrying the film. */
+function SpinePart({ section, anchorId }: { section?: SpineSection; anchorId?: string }) {
   if (!section || !(section.heading || section.body || section.media)) return null
   return (
-    <div className="flex flex-col gap-6 lg:gap-8">
-      <RevealText className={eyebrowClass}>{label}</RevealText>
-      {section.heading && (
-        <RevealText
-          as="h3"
-          className="text-[clamp(28px,3vw,64px)] text-neutral-100 font-semibold tracking-tight leading-[1.05]"
-          delay={0.05}
-        >
-          {section.heading}
-        </RevealText>
-      )}
-      {section.body && (
-        <RevealText
-          className="text-[clamp(16px,1.3vw,26px)] text-neutral-300 font-medium leading-[1.4] max-w-[65ch]"
-          delay={0.1}
-        >
-          {section.body}
-        </RevealText>
-      )}
-      {section.media && <MediaRenderer item={section.media} className={spineMediaClass} />}
+    <div
+      id={anchorId}
+      className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-10 border-t border-white/10 py-10"
+    >
+      <div className="md:col-span-4">
+        {section.heading && (
+          <RevealText
+            as="h3"
+            className="text-[clamp(24px,2.2vw,40px)] text-neutral-100 font-bold tracking-tight leading-[1.1]"
+          >
+            {section.heading}
+          </RevealText>
+        )}
+      </div>
+      <div className="md:col-span-8 flex flex-col gap-6">
+        {section.body && (
+          <RevealText
+            className="text-[clamp(16px,1.1vw,20px)] text-neutral-300 font-medium leading-[1.6] max-w-[65ch]"
+            delay={0.05}
+          >
+            {section.body}
+          </RevealText>
+        )}
+        {section.media && <MediaRenderer item={section.media} className={spineMediaClass} />}
+      </div>
     </div>
   )
 }
@@ -213,11 +263,13 @@ function TagList({ items }: { items: string[] }) {
   )
 }
 
-/* Credits / Tools / Formats / Timeline block at the bottom of the case
- * study. Each of the four is independently optional and collapses on its
- * own; the whole block collapses when none are present. Credits renders as
- * either a role/name list or a single descriptive paragraph
- * (creditsText), whichever the project supplies. */
+/* Credits & details footer, laid out like the story sections: a left
+ * heading and a right column holding a 2-column spec list (Tools, Formats,
+ * Timeline) plus the full team credit paragraph. Each of the four pieces is
+ * independently optional and collapses on its own; the whole block
+ * collapses when none are present. Credits renders as either a role/name
+ * list or a single descriptive paragraph (creditsText), whichever the
+ * project supplies. */
 function CreditsTools({ project }: { project: WorkProject }) {
   const hasCreditsList = Boolean(project.credits && project.credits.length > 0)
   const hasCreditsText = Boolean(project.creditsText)
@@ -225,74 +277,85 @@ function CreditsTools({ project }: { project: WorkProject }) {
   const hasTools = Boolean(project.tools && project.tools.length > 0)
   const hasFormats = Boolean(project.formats && project.formats.length > 0)
   const hasTimeline = Boolean(project.timeline)
-  if (!hasCredits && !hasTools && !hasFormats && !hasTimeline) return null
+  const hasSpecs = hasTools || hasFormats || hasTimeline
+  if (!hasCredits && !hasSpecs) return null
+
+  const labels = content.caseStudy
 
   return (
-    <div className="w-full flex flex-col gap-8 lg:gap-12">
-      {hasCredits && (
-        <div className="flex flex-col gap-4">
-          <RevealText className={eyebrowClass}>{content.caseStudy.creditsHeading}</RevealText>
-          {hasCreditsText ? (
-            <RevealText
-              className="text-neutral-100 text-sm lg:text-base font-medium leading-[1.5] max-w-[65ch]"
-              delay={0.05}
-            >
-              {project.creditsText}
-            </RevealText>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {project.credits!.map((c) => (
-                <li
-                  key={`${c.role}-${c.name}`}
-                  className="flex justify-between gap-4 text-neutral-100 text-sm lg:text-base font-medium"
-                >
-                  <span className="text-neutral-400 uppercase tracking-wide">{c.role}</span>
-                  <span className="text-right">{c.name}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-      {(hasTools || hasFormats || hasTimeline) && (
-        <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-          {hasTools && (
-            <div className="flex flex-col gap-4">
-              <RevealText className={eyebrowClass}>{content.caseStudy.toolsHeading}</RevealText>
-              <TagList items={project.tools!} />
-            </div>
-          )}
-          {hasFormats && (
-            <div className="flex flex-col gap-4">
-              <RevealText className={eyebrowClass}>{content.caseStudy.formatsHeading}</RevealText>
-              <TagList items={project.formats!} />
-            </div>
-          )}
-          {hasTimeline && (
-            <div className="flex flex-col gap-4">
-              <RevealText className={eyebrowClass}>{content.caseStudy.timelineHeading}</RevealText>
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-10 border-t border-white/10 py-10">
+      <div className="md:col-span-4">
+        <RevealText
+          as="h3"
+          className="text-[clamp(24px,2.2vw,40px)] text-neutral-100 font-bold tracking-tight leading-[1.1]"
+        >
+          {labels.creditsDetailsHeading}
+        </RevealText>
+      </div>
+      <div className="md:col-span-8 flex flex-col gap-8">
+        {hasSpecs && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {hasTools && (
+              <div className="flex flex-col gap-3">
+                <RevealText className={eyebrowClass}>{labels.toolsHeading}</RevealText>
+                <TagList items={project.tools!} />
+              </div>
+            )}
+            {hasFormats && (
+              <div className="flex flex-col gap-3">
+                <RevealText className={eyebrowClass}>{labels.formatsHeading}</RevealText>
+                <TagList items={project.formats!} />
+              </div>
+            )}
+            {hasTimeline && (
+              <div className="flex flex-col gap-3">
+                <RevealText className={eyebrowClass}>{labels.timelineHeading}</RevealText>
+                <RevealText className="text-neutral-100 text-sm lg:text-base font-medium" delay={0.05}>
+                  {project.timeline}
+                </RevealText>
+              </div>
+            )}
+          </div>
+        )}
+        {hasCredits && (
+          <div className="flex flex-col gap-3">
+            <RevealText className={eyebrowClass}>{labels.teamHeading}</RevealText>
+            {hasCreditsText ? (
               <RevealText
-                className="text-neutral-100 text-sm lg:text-base font-medium"
+                className="text-neutral-100 text-sm lg:text-base font-medium leading-[1.6] max-w-[65ch]"
                 delay={0.05}
               >
-                {project.timeline}
+                {project.creditsText}
               </RevealText>
-            </div>
-          )}
-        </div>
-      )}
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {project.credits!.map((c) => (
+                  <li
+                    key={`${c.role}-${c.name}`}
+                    className="flex justify-between gap-4 text-neutral-100 text-sm lg:text-base font-medium"
+                  >
+                    <span className="text-neutral-400 uppercase tracking-wide">{c.role}</span>
+                    <span className="text-right">{c.name}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
-/* /work/[slug] body — mirrors reference/work/<slug>.html: a dark rounded shell
- * with a centered title, a neutral-800 meta panel, and a media gallery. */
+/* /work/[slug] body: a dark rounded shell, centered on wide screens, with a
+ * title, a metadata card, a hero asset, and a WPP-style 2-column editorial
+ * spine (heading left, story copy right) followed by credits & details. */
 export function CaseStudy({ project }: { project: WorkProject }) {
   const spine = project.spine
   const hasSpine = Boolean(
     spine && Object.values(spine).some((s) => s && (s.heading || s.body || s.media))
   )
-  const spineParts = content.caseStudy.spineParts
+  const hasFilm = spine?.work?.media?.kind === 'hosted-video'
 
   const addons = project.addons
   const hasAddons = Boolean(
@@ -301,139 +364,91 @@ export function CaseStudy({ project }: { project: WorkProject }) {
   )
 
   return (
-    <main className="bg-neutral-100 px-2 lg:px-4 pt-[200px] md:pt-[clamp(128px,12vw,500px)]">
-      <div
-        data-surface="dark"
-        className="relative flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900"
-      >
-        <Link
-          href="/#work"
-          className="group absolute top-5 lg:top-8 left-4 lg:left-8 flex items-center gap-1.5 text-xs lg:text-sm text-neutral-400 uppercase font-medium tracking-wider hover:text-neutral-100 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-100 rounded"
+    <main className="bg-neutral-100 pt-[200px] md:pt-[clamp(128px,12vw,500px)]">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div
+          data-surface="dark"
+          className="relative flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900"
         >
-          <ArrowLeft />
-          {content.caseStudy.backToWorkLabel}
-        </Link>
-
-        <div className="w-full flex flex-col items-center gap-3 lg:gap-5">
-          <RevealText
-            as="h1"
-            className="w-full text-neutral-100 text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
+          <Link
+            href="/#work"
+            className="group absolute top-5 lg:top-8 left-4 lg:left-8 flex items-center gap-1.5 text-xs lg:text-sm text-neutral-400 uppercase font-medium tracking-wider hover:text-neutral-100 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-100 rounded"
           >
-            {project.title}
-          </RevealText>
+            <ArrowLeft />
+            {content.caseStudy.backToWorkLabel}
+          </Link>
 
-          {project.subtitle && (
+          <div className="w-full flex flex-col items-center gap-3 lg:gap-5">
             <RevealText
-              className="w-full text-neutral-400 text-center text-sm lg:text-[clamp(16px,1.2vw,24px)] font-medium tracking-wide"
-              delay={0.05}
+              as="h1"
+              className="w-full text-neutral-100 text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
             >
-              {project.subtitle}
+              {project.title}
             </RevealText>
-          )}
-        </div>
 
-        <SpecHeader project={project} />
-
-        {project.heroAsset && <MediaRenderer item={project.heroAsset} className={heroMediaClass} />}
-
-        <div className="w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] px-4 lg:px-5 pt-5 lg:pt-6 pb-4 lg:pb-5 rounded-lg lg:rounded-xl bg-neutral-800">
-          {hasSpine && (
-            <div className="flex flex-col gap-16 lg:gap-24">
-              <SpinePart label={spineParts.brief} section={spine?.brief} />
-              <SpinePart label={spineParts.challenge} section={spine?.challenge} />
-              <SpinePart label={spineParts.approach} section={spine?.approach} />
-              <SpinePart label={spineParts.work} section={spine?.work} />
-            </div>
-          )}
-
-          {/* Meta grid: Year / Services / Summary */}
-          <div className="flex flex-col gap-8 lg:grid lg:grid-cols-12">
-            <div className="flex flex-col gap-3 lg:col-span-2">
-              <RevealText className={eyebrowClass}>{content.caseStudy.yearLabel}</RevealText>
+            {project.subtitle && (
               <RevealText
-                className="text-[clamp(48px,3.5vw,96px)] text-neutral-100 font-semibold tracking-tight leading-[0.8]"
+                className="w-full text-neutral-400 text-center text-sm lg:text-[clamp(16px,1.2vw,24px)] font-medium tracking-wide"
                 delay={0.05}
               >
-                {project.year}
+                {project.subtitle}
               </RevealText>
-            </div>
-
-            <div className="flex flex-col gap-3 lg:col-span-4">
-              <RevealText className={eyebrowClass}>{content.caseStudy.servicesLabel}</RevealText>
-              <ul className="flex gap-1.5 2xl:gap-2 flex-wrap">
-                {project.services.map((s) => (
-                  <li
-                    key={s}
-                    className="font-mono text-[10px] lg:text-[clamp(12px,0.7vw,16px)] text-neutral-100 uppercase tracking-[1.1px] bg-neutral-100/10 px-2 3xl:px-3 pt-2 pb-1.5 rounded-md whitespace-nowrap"
-                  >
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="hidden lg:block lg:col-span-1" />
-
-            <div className="flex flex-col gap-3 lg:col-span-5">
-              <RevealText className={eyebrowClass}>{content.caseStudy.summaryLabel}</RevealText>
-              <RevealText
-                className="text-[clamp(16px,1.3vw,30px)] text-neutral-100 font-medium leading-[1.3]"
-                delay={0.05}
-              >
-                {project.summary}
-              </RevealText>
-              {project.visitUrl && (
-                <RevealText delay={0.1}>
-                  <a
-                    href={project.visitUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs lg:text-[clamp(14px,0.8vw,18px)] text-neutral-400 uppercase font-medium tracking-wider flex items-center gap-1 hover:underline hover:text-neutral-100 transition-all duration-300"
-                  >
-                    {content.caseStudy.visitSiteLabel}
-                    <ArrowUpRight />
-                  </a>
-                </RevealText>
-              )}
-            </div>
+            )}
           </div>
 
-          {project.gallery.length > 0 && (
-            <div className="flex flex-col gap-4 lg:gap-5">
-              {project.gallery.map((row, i) =>
-                row.layout === 'full' ? (
-                  <MediaRenderer
-                    key={i}
-                    item={row.items[0]}
-                    className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)]"
-                  />
-                ) : (
-                  <div key={i} className="flex gap-4 lg:gap-5">
-                    <Media
+          <div className="w-full px-4 lg:px-5">
+            <MetaCard project={project} hasFilm={hasFilm} />
+          </div>
+
+          {project.heroAsset && <MediaRenderer item={project.heroAsset} className={heroMediaClass} />}
+
+          <div className="w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] px-4 lg:px-5 pt-5 lg:pt-6 pb-4 lg:pb-5 rounded-lg lg:rounded-xl bg-neutral-800">
+            {hasSpine && (
+              <div className="flex flex-col">
+                <SpinePart section={spine?.brief} />
+                <SpinePart section={spine?.challenge} />
+                <SpinePart section={spine?.approach} />
+                <SpinePart section={spine?.work} anchorId={hasFilm ? FILM_ANCHOR_ID : undefined} />
+              </div>
+            )}
+
+            {project.gallery.length > 0 && (
+              <div className="flex flex-col gap-4 lg:gap-5">
+                {project.gallery.map((row, i) =>
+                  row.layout === 'full' ? (
+                    <MediaRenderer
+                      key={i}
                       item={row.items[0]}
-                      className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
+                      className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)]"
                     />
-                    <Media
-                      item={row.items[1]}
-                      className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
-                    />
-                  </div>
-                )
-              )}
-            </div>
-          )}
+                  ) : (
+                    <div key={i} className="flex gap-4 lg:gap-5">
+                      <Media
+                        item={row.items[0]}
+                        className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
+                      />
+                      <Media
+                        item={row.items[1]}
+                        className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
+                      />
+                    </div>
+                  )
+                )}
+              </div>
+            )}
 
-          {hasAddons && (
-            <div className="flex flex-col gap-16 lg:gap-24">
-              <AddonBlock label={content.caseStudy.addonLabels.aiPipeline} section={addons?.aiPipeline} />
-              <AddonBlock label={content.caseStudy.addonLabels.storyboards} section={addons?.storyboards} />
-              <AddonBlock label={content.caseStudy.addonLabels.ratioRebuilds} section={addons?.ratioRebuilds} />
-              <AddonBlock label={content.caseStudy.addonLabels.oohInMarket} section={addons?.oohInMarket} />
-              <AddonBlock label={content.caseStudy.addonLabels.payoff} section={addons?.payoff} />
-            </div>
-          )}
+            {hasAddons && (
+              <div className="flex flex-col gap-16 lg:gap-24">
+                <AddonBlock label={content.caseStudy.addonLabels.aiPipeline} section={addons?.aiPipeline} />
+                <AddonBlock label={content.caseStudy.addonLabels.storyboards} section={addons?.storyboards} />
+                <AddonBlock label={content.caseStudy.addonLabels.ratioRebuilds} section={addons?.ratioRebuilds} />
+                <AddonBlock label={content.caseStudy.addonLabels.oohInMarket} section={addons?.oohInMarket} />
+                <AddonBlock label={content.caseStudy.addonLabels.payoff} section={addons?.payoff} />
+              </div>
+            )}
 
-          <CreditsTools project={project} />
+            <CreditsTools project={project} />
+          </div>
         </div>
       </div>
     </main>
