@@ -164,6 +164,20 @@
   at 375 to 2560px is low, but a manual look in-browser is recommended
   before calling this fully signed off.
 
+- Story section card ("The brief", "The challenge" etc, gallery, add-ons) now
+  uses the exact same inner padding as the top metadata card (px-6 lg:px-10
+  py-8 lg:py-10 in CaseStudy.tsx), replacing its old thinner top/bottom-only
+  padding. Story headings, paragraph text, gallery images and video all now
+  sit with the same comfortable left/right inset as the metadata card's
+  content, and never touch the card's outer edges. Divider lines between
+  story sections automatically stay inside that padding since they span
+  their (now inset) parent, not the outer card. No copy changed. Verified by
+  reading the rendered HTML from the running dev server: new padding class
+  confirmed present, page returns 200. Padding uses only relative Tailwind
+  spacing units already used elsewhere on the page, so overflow risk at 375
+  to 2560px is low, but no Playwright/browser automation tool was available
+  this session, so no in-browser visual screenshots were taken.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance
