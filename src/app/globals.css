@@ -131,10 +131,37 @@ html.lenis body {
   pointer-events: none;
 }
 
-/* Selection */
+/* ── Selection ───────────────────────────────────────────────────────────
+   Was a single global rule forcing selected text to #171717 — the exact
+   colour of the dark surfaces, so selecting text there rendered it invisible.
+
+   Keyed off an explicit `data-surface` marker rather than the background
+   utility classes: <body> itself carries `bg-neutral-900`, so a
+   `.bg-neutral-900 ::selection` rule would cascade the dark treatment across
+   the whole page, light sections included. Each rule is written separately
+   because grouping `::selection` with `::-moz-selection` invalidates both. */
+
+/* Light surfaces (default): dark text on a light highlight. */
 ::selection {
-  background: rgba(23, 23, 23, 0.12);
+  background: #cfcfcf;
   color: #171717;
+}
+::-moz-selection {
+  background: #cfcfcf;
+  color: #171717;
+}
+
+/* Dark surfaces: light text on a raised dark highlight. Descendant selector
+   covers nested panels (e.g. the neutral-800 blocks inside neutral-900). */
+[data-surface='dark']::selection,
+[data-surface='dark'] ::selection {
+  background: #525252;
+  color: #f5f5f5;
+}
+[data-surface='dark']::-moz-selection,
+[data-surface='dark'] ::-moz-selection {
+  background: #525252;
+  color: #f5f5f5;
 }
 
 /* Scrollbar */

@@ -1,7 +1,8 @@
 'use client'
 
 import { RevealText } from '@/components/ui/RevealText'
-import type { WorkProject, GalleryRow } from '@/data/work'
+import { VimeoEmbed } from '@/components/ui/VimeoEmbed'
+import type { WorkProject, LocalMediaItem } from '@/data/work'
 
 function ArrowUpRight() {
   return (
@@ -24,7 +25,7 @@ function ArrowUpRight() {
   )
 }
 
-function Media({ item, className }: { item: GalleryRow['items'][number]; className: string }) {
+function Media({ item, className }: { item: LocalMediaItem; className: string }) {
   return (
     <div className={`rounded-lg lg:rounded-xl overflow-hidden relative ${className}`}>
       {item.kind === 'video' ? (
@@ -49,7 +50,10 @@ function Media({ item, className }: { item: GalleryRow['items'][number]; classNa
 export function CaseStudy({ project }: { project: WorkProject }) {
   return (
     <main className="bg-neutral-100 px-2 lg:px-4 pt-[200px] md:pt-[clamp(128px,12vw,500px)]">
-      <div className="flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900">
+      <div
+        data-surface="dark"
+        className="flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900"
+      >
         <RevealText
           as="h1"
           className="w-full text-neutral-100 text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
@@ -120,11 +124,20 @@ export function CaseStudy({ project }: { project: WorkProject }) {
           <div className="flex flex-col gap-4 lg:gap-5">
             {project.gallery.map((row, i) =>
               row.layout === 'full' ? (
-                <Media
-                  key={i}
-                  item={row.items[0]}
-                  className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)]"
-                />
+                row.items[0].kind === 'vimeo' ? (
+                  <VimeoEmbed
+                    key={i}
+                    vimeoId={row.items[0].vimeoId}
+                    poster={row.items[0].poster}
+                    alt={row.items[0].alt}
+                  />
+                ) : (
+                  <Media
+                    key={i}
+                    item={row.items[0]}
+                    className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)]"
+                  />
+                )
               ) : (
                 <div key={i} className="flex gap-4 lg:gap-5">
                   <Media

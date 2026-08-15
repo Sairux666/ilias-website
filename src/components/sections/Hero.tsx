@@ -12,17 +12,39 @@ gsap.registerPlugin(ScrollTrigger)
 const EASE = [0.16, 1, 0.3, 1] as const
 const VIDEO_SRC = '/videos/hero-video-compressed.mp4'
 
-/* Scroll-scale tuning table, decoded verbatim from the reference build. */
-function getScrollConfig(vw: number) {
-  const table = [
-    { maxWidth: 900, translateY: -95 },
-    { maxWidth: 1200, translateY: -105 },
-    { maxWidth: 1600, translateY: -118 },
-    { maxWidth: 2000, translateY: -110 },
-    { maxWidth: 2500, translateY: -115 },
-  ]
-  for (const bp of table) if (vw <= bp.maxWidth) return { translateY: bp.translateY }
-  return { translateY: -125 }
+/* Scale the preview parks at before the scroll-driven grow-to-full begins. */
+const INITIAL_SCALE = 0.5
+/* Clearance kept below the fixed header before the preview may start. */
+const HEADER_BOTTOM = 96
+
+/* Where the preview parks at rest, as a vh offset from its natural position at
+   the top of `.intro`.
+
+   The reference shipped a hardcoded width→translateY table, but those numbers
+   were tuned for its own wordmark and left the preview hugging the header with
+   a large gap above the title. Deriving it instead centres the preview in the
+   band between the header and the wordmark at every viewport. */
+function getScrollConfig(vw: number, vh: number) {
+  // The preview is `w-full aspect-video` inside a px-8 section, and is scaled
+  // about its own centre — so scaling lowers its top edge by a quarter of the
+  // natural height.
+  const naturalH = ((vw - 64) * 9) / 16
+  const scaledH = naturalH * INITIAL_SCALE
+  const untransformedTop = vh + (naturalH * (1 - INITIAL_SCALE)) / 2
+
+  // Mirror the wordmark's own type metrics: one line at lg+, three below it.
+  const wordmarkH =
+    vw >= 1024 ? (0.85 * (vw - 64)) / 14.5 : (3 * 0.85 * (vw - 32)) / 5.5
+  const wordmarkTop = 0.8 * vh - wordmarkH // both breakpoints anchor at 20vh
+
+  // On a viewport too short to fit the preview in that band the midpoint would
+  // land above the header, sliding the preview under the fixed nav; keep it
+  // clear and let the overflow fall towards the wordmark instead.
+  const targetTop = Math.max(
+    HEADER_BOTTOM,
+    HEADER_BOTTOM + (wordmarkTop - HEADER_BOTTOM - scaledH) / 2
+  )
+  return { translateY: ((targetTop - untransformedTop) / vh) * 100 }
 }
 
 function VolumeOffIcon() {
@@ -94,7 +116,6 @@ export function Hero() {
   const [muted, setMuted] = useState(true)
   const { isInitialLoad } = useInitialLoad()
   // Reveal delays gate on the loading screen (initial load) vs. client nav.
-  const d1 = isInitialLoad ? 2.5 : 0.5 // "A Seriously Good"
   const d2 = isInitialLoad ? 2.6 : 0.6 // big wordmarks + video clip
   const d3 = isInitialLoad ? 3 : 1 // scroll indicators
 
@@ -120,12 +141,12 @@ export function Hero() {
       const vw = window.innerWidth
       if (vw < 768) return () => {}
 
-      const cfg = getScrollConfig(vw)
+      const cfg = getScrollConfig(vw, window.innerHeight)
       const state = {
         scrollProgress: 0,
         initialTranslateY: cfg.translateY,
         currentTranslateY: cfg.translateY,
-        scale: 0.35,
+        scale: INITIAL_SCALE,
         targetMouseX: 0,
         currentMouseX: 0,
       }
@@ -143,7 +164,7 @@ export function Hero() {
               0,
               state.scrollProgress
             )
-            state.scale = gsap.utils.interpolate(0.35, 1, state.scrollProgress)
+            state.scale = gsap.utils.interpolate(INITIAL_SCALE, 1, state.scrollProgress)
           },
         },
       })
@@ -190,25 +211,14 @@ export function Hero() {
 
   return (
     <>
-      {/* ── Screen 1 (mobile): "A Seriously Good" + inline video + big text ── */}
+      {/* ── Screen 1 (mobile/tablet): inline video + stacked wordmark ──
+         Grouped and vertically centred rather than pinned to the viewport
+         edges, so the wordmark stays near the video instead of stranding a
+         dead gap between them. md+ hides the inline video (the scroll-driven
+         `.intro` preview takes over), hence the extra top offset there. */}
       <section className="h-[100svh] relative px-4 lg:px-8 overflow-x-hidden">
-        <div className="flex flex-col justify-between h-full py-32 lg:hidden">
+        <div className="flex flex-col justify-center h-full gap-10 md:justify-end md:pb-[20vh] lg:hidden">
           <div className="flex flex-col gap-1">
-            <div className="overflow-hidden mb-1 w-full relative">
-              <motion.div
-                initial={{ y: '100%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 1, delay: d1, ease: EASE }}
-                className="flex justify-between w-full"
-              >
-                <p className="text-[clamp(14px,1.2vw,20px)] uppercase font-semibold">A</p>
-                <p className="text-[clamp(14px,1.2vw,20px)] uppercase font-semibold absolute left-1/2 -translate-x-1/2">
-                  Seriously
-                </p>
-                <p className="text-[clamp(14px,1.2vw,20px)] uppercase font-semibold">Good</p>
-              </motion.div>
-            </div>
-
             <div className="relative md:hidden">
               <motion.video
                 ref={mobileVideoRef}
@@ -234,35 +244,36 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row lg:justify-between items-center gap-2 lg:gap-0">
-            <div className="overflow-hidden">
-              <motion.div
+          <div className="flex flex-col items-center w-full pointer-events-none">
+            <div className="overflow-hidden w-full">
+              <motion.p
                 initial={{ y: '100%' }}
                 animate={{ y: '0%' }}
                 transition={{ duration: 1, delay: d2, ease: EASE }}
-                className="w-full pointer-events-none lg:pr-[4vw]"
+                className="text-center uppercase font-extrabold tracking-tight leading-[0.85] whitespace-nowrap text-[calc((100vw_-_32px)/5.5)]"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/other/design.png"
-                  alt="Design"
-                  className="h-[15vw] md:h-[16vw] lg:h-[17vw]"
-                />
-              </motion.div>
+                Graphic &
+              </motion.p>
             </div>
             <div className="overflow-hidden w-full">
-              <motion.div
+              <motion.p
                 initial={{ y: '100%' }}
                 animate={{ y: '0%' }}
                 transition={{ duration: 1, delay: d2, ease: EASE }}
+                className="text-center uppercase font-extrabold tracking-tight leading-[0.85] whitespace-nowrap text-[calc((100vw_-_32px)/5.5)]"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/other/engineer.png"
-                  alt="Engineer"
-                  className="w-full pointer-events-none"
-                />
-              </motion.div>
+                Motion
+              </motion.p>
+            </div>
+            <div className="overflow-hidden w-full">
+              <motion.p
+                initial={{ y: '100%' }}
+                animate={{ y: '0%' }}
+                transition={{ duration: 1, delay: d2, ease: EASE }}
+                className="text-center uppercase font-extrabold tracking-tight leading-[0.85] whitespace-nowrap text-[calc((100vw_-_32px)/5.5)]"
+              >
+                Designer
+              </motion.p>
             </div>
           </div>
         </div>
@@ -270,51 +281,16 @@ export function Hero() {
 
       {/* ── Screen 1 (desktop): absolutely-positioned big text + scroll hints ── */}
       <section className="hidden lg:block">
-        <div className="flex flex-col uppercase font-semibold absolute bottom-[15vh] lg:bottom-[20vh] left-8 right-8">
-          <div className="overflow-hidden mb-2 lg:mb-0 lg:w-full relative mx-auto lg:mx-0">
-            <motion.div
+        <div className="flex flex-col uppercase font-extrabold absolute bottom-[20vh] left-8 right-8">
+          <div className="overflow-hidden w-full">
+            <motion.p
               initial={{ y: '100%' }}
               animate={{ y: '0%' }}
-              transition={{ duration: 1, delay: d1, ease: EASE }}
-              className="flex justify-between w-full"
+              transition={{ duration: 1, delay: d2, ease: EASE }}
+              className="text-center tracking-tight leading-[0.85] whitespace-nowrap text-[calc((100vw_-_64px)/14.5)] pointer-events-none"
             >
-              <p className="text-[clamp(14px,1.2vw,20px)] uppercase block">A</p>
-              <p className="text-[clamp(14px,1.2vw,20px)] uppercase absolute left-1/2 -translate-x-1/2">
-                Seriously
-              </p>
-              <p className="text-[clamp(14px,1.2vw,20px)] uppercase block">Good</p>
-            </motion.div>
-          </div>
-
-          <div className="flex flex-col lg:flex-row lg:justify-between items-center gap-2 lg:gap-0">
-            <div className="overflow-hidden mr-[4vw]">
-              <motion.div
-                initial={{ y: '100%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 1, delay: d2, ease: EASE }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/other/design.png"
-                  alt="Design"
-                  className="h-[10vw] w-auto object-contain pointer-events-none"
-                />
-              </motion.div>
-            </div>
-            <div className="overflow-hidden">
-              <motion.div
-                initial={{ y: '100%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 1, delay: d2, ease: EASE }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/other/engineer.png"
-                  alt="Engineer"
-                  className="h-[10vw] w-auto object-contain pointer-events-none"
-                />
-              </motion.div>
-            </div>
+              Graphic & Motion Designer
+            </motion.p>
           </div>
         </div>
 
@@ -326,7 +302,7 @@ export function Hero() {
             className="flex items-center gap-1"
           >
             <ArrowDownIcon />
-            <p className="text-[clamp(12px,1.2vw,20px)] font-medium">Scroll for</p>
+            <p className="text-[clamp(12px,1.2vw,20px)] font-medium">Keep scrolling</p>
           </motion.div>
         </div>
         <div className="overflow-hidden absolute right-8 bottom-6">
@@ -336,14 +312,19 @@ export function Hero() {
             transition={{ duration: 1, delay: d3, ease: EASE }}
             className="flex items-center gap-1"
           >
-            <p className="text-[clamp(12px,1.2vw,20px)] font-medium">cool sh*t</p>
+            <p className="text-[clamp(12px,1.2vw,20px)] font-medium">it gets better</p>
             <ArrowDownIcon />
           </motion.div>
         </div>
       </section>
 
-      {/* ── Screen 2: cursor-following, scroll-scaling video preview ── */}
-      <section className="hidden md:block intro h-[100svh] px-8">
+      {/* ── Screen 2: cursor-following, scroll-scaling video preview ──
+         Height is left to the video's own aspect ratio rather than pinned to
+         100svh: the ScrollTrigger below keys off this section's *top* edge for
+         both start and end, so its height never affected the animation — it
+         only stranded up to ~600px of dead space under the video on shorter
+         viewports. */}
+      <section className="hidden md:block intro px-8">
         <motion.div
           ref={previewRef}
           initial={{ clipPath: 'inset(0 0 100% 0)' }}

@@ -1,14 +1,14 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { content } from '@/data/content'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const ABOUT_TEXT =
-  'Passionate about merging design and engineering, I craft smooth, interactive experiences with purpose. With a focus on motion, performance, and detail, I help bring digital products to life for forward-thinking brands around the world.'
+const ABOUT_TEXT = content.statement.text
 
 function CopyReveal({ children }: { children: React.ReactNode }) {
   return (
@@ -28,8 +28,6 @@ function CopyReveal({ children }: { children: React.ReactNode }) {
 
 export function About() {
   const textRef = useRef<HTMLParagraphElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const videoInView = useInView(videoRef, { once: false, margin: '0px 0px -30% 0px' })
 
   // Smooth word-by-word opacity reveal, scrubbed to scroll (desktop only).
   useEffect(() => {
@@ -57,26 +55,17 @@ export function About() {
   }, [])
 
   return (
-    <section id="about" className="grid grid-cols-12 gap-4 lg:gap-8 pt-56 pb-28 p-4 lg:px-8">
-      <div className="flex flex-col col-span-12 lg:col-span-7">
+    // Top padding is deliberately much tighter than the reference's pt-56: with
+    // the companion video gone there is nothing to fill the gap the hero's
+    // scroll-scaled preview leaves behind, so the copy starts sooner.
+    <section
+      id="about"
+      className="grid grid-cols-12 gap-4 lg:gap-8 pt-16 md:pt-24 lg:pt-28 pb-20 lg:pb-28 px-4 lg:px-8"
+    >
+      <div className="flex flex-col col-span-12 lg:col-span-10">
         <CopyReveal>
-          <h4 className="font-semibold uppercase mb-4">Myself</h4>
+          <h4 className="font-semibold uppercase mb-4 lg:mb-6">Myself</h4>
         </CopyReveal>
-
-        <div className="lg:hidden col-span-12 aspect-video rounded-lg overflow-hidden mb-4">
-          <motion.video
-            ref={videoRef}
-            initial={{ clipPath: 'inset(0 0 100% 0)' }}
-            animate={videoInView ? { clipPath: 'inset(0 0 0 0)' } : {}}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-            src="/videos/about-video-compressed.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="pointer-events-none w-full h-full object-cover"
-          />
-        </div>
 
         <p
           ref={textRef}
@@ -87,19 +76,6 @@ export function About() {
         <p className="lg:hidden text-[clamp(28px,3.5vw,96px)] font-semibold tracking-tight leading-none">
           {ABOUT_TEXT}
         </p>
-      </div>
-
-      <div className="hidden lg:block h-full col-span-5">
-        <div className="sticky top-[calc(100vh-20vw-172px)] w-full aspect-video rounded-lg lg:rounded-xl overflow-hidden">
-          <video
-            src="/videos/about-video-compressed.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="pointer-events-none w-full h-full object-cover"
-          />
-        </div>
       </div>
     </section>
   )

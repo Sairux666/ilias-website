@@ -6,11 +6,13 @@
  * Assets live under /public/images/work/<slug>/ and /public/videos/.
  */
 
-export type MediaItem = { kind: 'image' | 'video'; src: string }
+export type LocalMediaItem = { kind: 'image'; src: string } | { kind: 'video'; src: string }
+
+export type MediaItem = LocalMediaItem | { kind: 'vimeo'; vimeoId: string; poster: string; alt: string }
 
 export type GalleryRow =
   | { layout: 'full'; items: [MediaItem] }
-  | { layout: 'pair'; items: [MediaItem, MediaItem] }
+  | { layout: 'pair'; items: [LocalMediaItem, LocalMediaItem] }
 
 export type WorkProject = {
   slug: string
@@ -48,6 +50,17 @@ export const workProjects: WorkProject[] = [
       },
       { layout: 'full', items: [{ kind: "image", src: "/images/work/jazmin-wong/image-05.png" }] },
       { layout: 'full', items: [{ kind: "image", src: "/images/work/jazmin-wong/image-06.png" }] },
+      {
+        layout: 'full',
+        items: [
+          {
+            kind: "vimeo",
+            vimeoId: "1218443173",
+            poster: "/portfolio/fanta/film-poster.webp",
+            alt: "Jazmin Wong project film",
+          },
+        ],
+      },
     ],
   },
   {

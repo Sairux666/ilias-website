@@ -1,12 +1,39 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
+
+type ScrollTarget = string | HTMLElement | number
+
+type LenisContextValue = {
+  scrollTo: (target: ScrollTarget, opts?: Record<string, unknown>) => void
+  stop: () => void
+  start: () => void
+}
+
+const LenisContext = createContext<LenisContextValue | null>(null)
+
+/* Access the shared Lenis instance (smooth scroll-to, pause/resume).
+   Falls back to native scroll if used outside the provider. */
+export function useLenis(): LenisContextValue {
+  const ctx = useContext(LenisContext)
+  return (
+    ctx ?? {
+      scrollTo: (target) => {
+        if (typeof target === 'number') window.scrollTo(0, target)
+        else if (typeof target === 'string') document.querySelector(target)?.scrollIntoView()
+        else target?.scrollIntoView()
+      },
+      stop: () => {},
+      start: () => {},
+    }
+  )
+}
 
 export function LenisProvider({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null)
@@ -50,5 +77,12 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
     ScrollTrigger.refresh()
   }, [pathname])
 
-  return <>{children}</>
+  const scrollTo = useCallback<LenisContextValue['scrollTo']>((target, opts) => {
+    lenisRef.current?.scrollTo(target, opts)
+  }, [])
+  const stop = useCallback(() => lenisRef.current?.stop(), [])
+  const start = useCallback(() => lenisRef.current?.start(), [])
+  const value = useMemo(() => ({ scrollTo, stop, start }), [scrollTo, stop, start])
+
+  return <LenisContext.Provider value={value}>{children}</LenisContext.Provider>
 }

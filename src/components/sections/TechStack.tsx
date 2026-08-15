@@ -1,25 +1,53 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-type Logo = { name: string; href: string; src: string; w: number }
+const EASE = [0.16, 1, 0.3, 1] as const
 
-const logos: Logo[] = [
-  { name: 'React', href: 'https://reactjs.org', src: '/images/svg/react-logo.svg', w: 90 },
-  { name: 'Next.js', href: 'https://nextjs.org', src: '/images/svg/nextjs-logotype-light-background.svg', w: 150 },
-  { name: 'TypeScript', href: 'https://www.typescriptlang.org', src: '/images/svg/typescript-logo.svg', w: 70 },
-  { name: 'GSAP', href: 'https://gsap.com/', src: '/images/svg/gsap-black.svg', w: 80 },
-  { name: 'Motion', href: 'https://motion.dev/', src: '/images/svg/motion.svg', w: 80 },
-  { name: 'TailwindCSS', href: 'https://tailwindcss.com/', src: '/images/svg/tailwindcss-logo.svg', w: 70 },
-  { name: 'Contentful', href: 'https://www.contentful.com/', src: '/images/svg/contentful-logo.svg', w: 50 },
-  { name: 'Supabase', href: 'https://supabase.com/', src: '/images/svg/supabase-logo.svg', w: 50 },
-  { name: 'Vercel', href: 'https://vercel.com/', src: '/images/svg/vercel-logotype-light.svg', w: 90 },
-  { name: 'Figma', href: 'https://www.figma.com/', src: '/images/svg/figma-logo.svg', w: 60 },
+type ClientLogo = { name: string; src: string }
+
+/* Single source for the logo wall. Add or remove entries and the grid reflows
+   on its own, including the orphan-row correction computed below. */
+const clientLogos: ClientLogo[] = [
+  { name: 'Coca-Cola', src: '/clients/coca-logo.png' },
+  { name: 'Fanta', src: '/clients/fanta-logo.png' },
+  { name: 'Spotify', src: '/clients/spotify-logo.png' },
+  { name: 'Milka', src: '/clients/milka-logo.png' },
+  { name: 'Dacia', src: '/clients/dacia-logo.png' },
+  { name: 'Renault', src: '/clients/renault-logo.png' },
+  { name: 'OCP', src: '/clients/ocp-logo.png' },
+  { name: 'Tefal', src: '/clients/tefal-logo.png' },
+  { name: 'British Council', src: '/clients/british-council-logo.png' },
+  { name: 'Isabel Marant', src: '/clients/isabel-logo.png' },
 ]
+
+/* A final row holding exactly one logo reads as an orphan, so centre it in the
+   track instead. Computed per breakpoint from the array length; class strings
+   stay literal so Tailwind's compiler can see them. */
+function orphanFix(count: number) {
+  return [
+    count % 3 === 1 ? 'sm:col-start-2' : 'sm:col-start-auto',
+    count % 4 === 1 ? 'lg:col-start-2' : 'lg:col-start-auto',
+    count % 5 === 1 ? 'xl:col-start-3' : 'xl:col-start-auto',
+  ].join(' ')
+}
+
+function useMedia(query: string) {
+  const [matches, setMatches] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia(query)
+    const update = () => setMatches(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [query])
+  return matches
+}
 
 function Letter({ char, className }: { char: string; className?: string }) {
   return (
@@ -35,6 +63,8 @@ function LetterScroll() {
 
   useEffect(() => {
     if (!ulRef.current) return
+    // Scrubbed letter roll is decorative; skip it entirely for reduced motion.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const ctx = gsap.context(() => {
       gsap.to('.letter', {
         yPercent: 100,
@@ -47,113 +77,68 @@ function LetterScroll() {
   }, [])
 
   return (
+    // The old fixed 500/800px height is what pushed the headline miles above the
+    // logos; fluid padding lets the two read as one block.
     <ul
       ref={ulRef}
-      className="letter-scroll flex flex-col justify-center items-center h-[500px] lg:h-[800px] py-24"
+      className="letter-scroll flex flex-col justify-center items-center py-[clamp(24px,4vw,64px)]"
     >
       <li className="text-[clamp(48px,14vw,250px)] font-bold tracking-tight leading-[0.85] overflow-hidden flex">
-        {'MODERN'.split('').map((c, i) => (
+        {'WORKED'.split('').map((c, i) => (
           <Letter key={i} char={c} />
         ))}
       </li>
       <li className="text-[clamp(48px,14vw,250px)] font-bold tracking-tight leading-[0.9] lg:leading-[0.85] overflow-hidden flex">
-        {'TECH'.split('').map((c, i) => (
-          <Letter key={i} char={c} className={i === 3 ? 'mr-[clamp(16px,4.5vw,72px)]' : ''} />
-        ))}
-        {'STACK'.split('').map((c, i) => (
-          <Letter key={`s${i}`} char={c} />
+        {'WITH'.split('').map((c, i) => (
+          <Letter key={i} char={c} />
         ))}
       </li>
     </ul>
   )
 }
 
-function LogoLink({ logo, className }: { logo: Logo; className: string }) {
-  return (
-    <a
-      href={logo.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Visit ${logo.name} website`}
-      className={`grid-item flex items-center justify-center group cursor-pointer ${className}`}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={logo.src}
-        alt={logo.name}
-        style={{ width: logo.w }}
-        className="z-10 transition-all duration-300"
-      />
-    </a>
-  )
-}
-
 export function TechStack() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const highlightRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const container = containerRef.current
-    const highlight = highlightRef.current
-    if (!container || !highlight) return
-
-    const moveTo = (item: Element) => {
-      const r = item.getBoundingClientRect()
-      const c = container.getBoundingClientRect()
-      highlight.style.transform = `translate(${r.left - c.left}px, ${r.top - c.top}px)`
-      highlight.style.width = `${r.width}px`
-      highlight.style.height = `${r.height}px`
-      container.querySelectorAll('img').forEach((img) => img.classList.remove('invert'))
-      const img = item.querySelector('img')
-      if (img) img.classList.add('invert')
-    }
-
-    const onMove = (e: MouseEvent) => {
-      const el = document.elementFromPoint(e.clientX, e.clientY)
-      if (el?.classList.contains('grid-item')) moveTo(el)
-      else if (el?.parentElement?.classList.contains('grid-item')) moveTo(el.parentElement)
-    }
-
-    const first = container.querySelector('.grid-item')
-    if (first) moveTo(first)
-    container.addEventListener('mousemove', onMove)
-    return () => container.removeEventListener('mousemove', onMove)
-  }, [])
+  const reduceMotion = useReducedMotion() ?? false
+  const isMobile = useMedia('(max-width: 639px)')
+  const lastIndex = clientLogos.length - 1
+  const lastClass = orphanFix(clientLogos.length)
 
   return (
-    <section className="pb-24 px-4 lg:px-8">
-      <LetterScroll />
-      <h4 className="font-semibold uppercase mb-4">Professional at</h4>
-      <div ref={containerRef} className="relative">
-        {/* Desktop: 3 + 7 grid */}
-        <div className="hidden lg:grid grid-rows-2">
-          <div className="grid grid-cols-3 border-b border-neutral-300 h-[clamp(200px,20vw,400px)]">
-            {logos.slice(0, 3).map((logo, i) => (
-              <LogoLink key={logo.name} logo={logo} className={i < 2 ? 'border-r border-neutral-300' : ''} />
-            ))}
-          </div>
-          <div className="grid grid-cols-7 h-[clamp(200px,15vw,400px)]">
-            {logos.slice(3).map((logo, i) => (
-              <LogoLink key={logo.name} logo={logo} className={i < 6 ? 'border-r border-neutral-300' : ''} />
-            ))}
-          </div>
-        </div>
+    <section className="px-4 lg:px-8 pt-[clamp(32px,5vw,64px)] pb-[clamp(48px,7vw,96px)]">
+      <div className="mx-auto w-full max-w-[1400px]">
+        <LetterScroll />
 
-        {/* Mobile/tablet: 2-col grid */}
-        <div className="grid grid-cols-2 lg:hidden">
-          {logos.map((logo, i) => (
-            <LogoLink
+        {/* Tight gap: the headline and the wall are one group. */}
+        <ul className="mt-[clamp(8px,2vw,28px)] grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 auto-rows-fr gap-x-[clamp(16px,3vw,48px)] gap-y-[clamp(20px,3vw,40px)]">
+          {clientLogos.map((logo, i) => (
+            <motion.li
               key={logo.name}
-              logo={logo}
-              className={`h-[clamp(200px,20vw,400px)] ${i % 2 === 0 ? 'border-r' : ''} ${i < logos.length - 1 ? 'border-b' : ''} border-neutral-300`}
-            />
+              initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 8 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '0px 0px -10% 0px' }}
+              transition={{
+                duration: reduceMotion ? 0 : isMobile ? 0.4 : 0.7,
+                delay: reduceMotion ? 0 : (isMobile ? 0.03 : 0.06) * i,
+                ease: EASE,
+              }}
+              className={`flex items-center justify-center ${i === lastIndex ? lastClass : ''}`}
+            >
+              {/* Display only: no anchor, no pointer, not focusable. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={logo.src}
+                alt={logo.name}
+                loading="lazy"
+                decoding="async"
+                className="w-auto h-auto max-w-[clamp(84px,10vw,128px)] max-h-[clamp(120px,14vw,180px)] object-contain select-none pointer-events-none"
+              />
+            </motion.li>
           ))}
-        </div>
+        </ul>
 
-        <div
-          ref={highlightRef}
-          className="highlight hidden sm:block absolute top-0 left-0 bg-neutral-900 pointer-events-none transition-all duration-300"
-        />
+        <p className="mt-[clamp(20px,3vw,40px)] text-[clamp(12px,0.9vw,14px)] text-neutral-500">
+          Work delivered via VML (WPP) and previous agencies.
+        </p>
       </div>
     </section>
   )

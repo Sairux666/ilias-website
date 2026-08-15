@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useInView, useScroll, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
@@ -9,41 +9,87 @@ type Service = {
   title: string
   description: string
   keywords: string[]
-  image: string
 }
 
 const services: Service[] = [
   {
-    title: 'Brand Strategy',
+    title: 'Campaign Design',
     description:
-      "Helping others uncover their brand's purpose and uniqueness – and the game plan to deliver it to win their customers' devotion.",
-    keywords: ['Research & Insights', 'Brand Strategy', 'Competitive Study', 'Voice & Tone', 'Naming & Copywriting', 'Workshops'],
-    image: '/images/services/brand-strategy.png',
+      'The key visual everything else hangs off, plus every adaptation that follows it, in every format the campaign needs.',
+    keywords: [
+      'Key Visuals',
+      'Campaign Design',
+      'Adaptations',
+      'Social Creative',
+      'OOH & DOOH',
+      'Pitch Design',
+    ],
   },
   {
-    title: 'Digital Design',
+    title: 'Motion',
     description:
-      'Designing engaging digital experiences that combine brand strategy and creativity with UX insights to deliver functionality and ease of use.',
-    keywords: ['Identity Design', 'Wireframing', 'UI', 'UX', 'Web Design', 'Product Design'],
-    image: '/images/services/digital-design.png',
+      'Making it move. From six second social cutdowns to brand films, built to hold the idea at any length.',
+    keywords: [
+      'Motion Graphics',
+      'Video Ads',
+      'Brand Films',
+      'Social Cutdowns',
+      'Storyboards',
+      'Kinetic Type',
+    ],
   },
   {
-    title: 'Development',
+    title: 'AI Production',
     description:
-      'Building digital products that combine design, technology, and business strategy to deliver seamless user experiences.',
-    keywords: ['Frontend Development', 'SEO', 'Motion', 'Animation', 'WebGL', 'CMS Development', 'Databases'],
-    image: '/images/services/development.png',
+      "Generative image and video, used where it makes something better or possible. Not because it's fast.",
+    keywords: [
+      'AI Video',
+      'Image-to-Video',
+      'Character Animation',
+      'Compositing',
+      'Retouching',
+      'Concept Visuals',
+    ],
   },
 ]
 
-function Reveal({ children, className }: { children: React.ReactNode; className?: string }) {
+function useMedia(query: string) {
+  const [matches, setMatches] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia(query)
+    const update = () => setMatches(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [query])
+  return matches
+}
+
+/* Clipped slide-up reveal. Mobile gets a shorter throw and duration so scroll
+   stays responsive; reduced-motion renders the text with no transform at all. */
+function Reveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: React.ReactNode
+  className?: string
+  delay?: number
+}) {
+  const reduceMotion = useReducedMotion() ?? false
+  const isMobile = useMedia('(max-width: 639px)')
+
+  if (reduceMotion) {
+    return <span className={`block ${className ?? ''}`}>{children}</span>
+  }
+
   return (
     <span className={`block overflow-hidden ${className ?? ''}`}>
       <motion.span
         initial={{ y: '100%' }}
         whileInView={{ y: '0%' }}
         viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-        transition={{ duration: 0.8, ease: EASE }}
+        transition={{ duration: isMobile ? 0.5 : 0.8, delay, ease: EASE }}
         className="block"
       >
         {children}
@@ -54,54 +100,62 @@ function Reveal({ children, className }: { children: React.ReactNode; className?
 
 function ServiceItem({ service, index }: { service: Service; index: number }) {
   const chipsRef = useRef<HTMLUListElement>(null)
-  const imageWrapRef = useRef<HTMLDivElement>(null)
   const chipsInView = useInView(chipsRef, { once: true, margin: '0px 0px -15% 0px' })
-  const imageInView = useInView(imageWrapRef, { once: true, margin: '0px 0px -10% 0px' })
-  const { scrollYProgress } = useScroll({ target: imageWrapRef, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], ['-3vh', '3vh'])
+  const reduceMotion = useReducedMotion() ?? false
+  const isMobile = useMedia('(max-width: 639px)')
+
+  const chipHidden = reduceMotion
+    ? { opacity: 1, y: 0, scale: 1 }
+    : { opacity: 0, y: isMobile ? 10 : 24, scale: isMobile ? 1 : 0.9 }
+  const chipShown = { opacity: 1, y: 0, scale: 1 }
 
   return (
-    <li className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-8 pt-10 last:pb-4 [&:not(:last-child)]:pb-10 lg:[&:last-child]:pb-10 [&:not(:last-child)]:border-b [&:not(:last-child)]:border-neutral-700">
-      <Reveal className="text-xs lg:text-[clamp(14px,0.8vw,18px)] text-neutral-300 uppercase font-medium tracking-wider mb-1 lg:col-span-2">
-        0{index + 1}
-      </Reveal>
-      <Reveal className="text-[clamp(24px,3.3vw,56px)] text-neutral-100 font-medium lg:col-span-4 mb-6 lg:mb-0 lg:-mt-4">
-        {service.title}
-      </Reveal>
-      <div className="flex flex-col gap-4 lg:gap-6 lg:col-span-3 mb-8 lg:mb-0">
-        <Reveal className="text-[clamp(16px,1.2vw,20px)] text-neutral-100 font-medium leading-[1.3]">
+    // Uniform vertical padding on every row (rather than a special last-child
+    // value) keeps the rhythm between all three pillars identical.
+    <li className="grid gap-y-[clamp(16px,2.2vw,28px)] py-[clamp(32px,4vw,56px)] lg:grid-cols-12 lg:gap-x-[clamp(20px,2vw,32px)] lg:gap-y-0 [&:not(:last-child)]:border-b [&:not(:last-child)]:border-neutral-700">
+      {/* Number + title: stacked on mobile, inline from sm, and released into
+          the 12-col grid at lg via `contents` so both align to their own tracks. */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-5 lg:contents">
+        <Reveal className="text-[clamp(11px,0.8vw,14px)] text-neutral-300 uppercase font-medium tracking-wider shrink-0 lg:col-span-1">
+          {`0${index + 1}`}
+        </Reveal>
+        <h3 className="lg:col-span-5 min-w-0">
+          <Reveal
+            className="text-[clamp(28px,5.5vw,44px)] lg:text-[clamp(32px,3.4vw,52px)] text-neutral-100 font-medium leading-[1.05] tracking-tight"
+            delay={reduceMotion ? 0 : 0.04}
+          >
+            {service.title}
+          </Reveal>
+        </h3>
+      </div>
+
+      <div className="flex flex-col gap-[clamp(16px,1.6vw,24px)] lg:col-span-6 min-w-0">
+        {/* ~55-70 characters per line at every width. */}
+        <Reveal
+          className="text-[clamp(15px,1.15vw,19px)] text-neutral-100 font-medium leading-[1.45] max-w-[62ch]"
+          delay={reduceMotion ? 0 : 0.08}
+        >
           {service.description}
         </Reveal>
-        <ul ref={chipsRef} className="flex gap-1.5 flex-wrap">
+        {/* Tighter gap/padding below sm: at 375 the wider values pack 6 pills as
+            5+1 or 3+2+1, stranding a lone pill on its own line. */}
+        <ul ref={chipsRef} className="flex flex-wrap gap-1 sm:gap-1.5">
           {service.keywords.map((kw, i) => (
             <motion.li
               key={kw}
-              initial={{ y: 24, opacity: 0, scale: 0.9 }}
-              animate={chipsInView ? { y: 0, opacity: 1, scale: 1 } : { y: 24, opacity: 0, scale: 0.9 }}
-              transition={{ duration: 1, delay: 0.025 * i, ease: EASE }}
-              className="font-mono text-[10px] text-neutral-100 uppercase tracking-[1.1] bg-neutral-100/10 px-2 3xl:px-3 pt-2 pb-1.5 rounded-md whitespace-nowrap"
+              initial={chipHidden}
+              animate={chipsInView ? chipShown : chipHidden}
+              transition={{
+                duration: reduceMotion ? 0 : isMobile ? 0.45 : 0.9,
+                delay: reduceMotion ? 0 : (isMobile ? 0.015 : 0.03) * i,
+                ease: EASE,
+              }}
+              className="font-mono text-[clamp(10px,0.68vw,12px)] text-neutral-100 uppercase tracking-[0.06em] bg-neutral-100/10 px-1.5 sm:px-2 pt-2 pb-1.5 rounded-md whitespace-nowrap"
             >
               {kw}
             </motion.li>
           ))}
         </ul>
-      </div>
-      <div className="lg:col-span-3">
-        <div
-          ref={imageWrapRef}
-          className="h-[220px] sm:h-[400px] md:h-[450px] lg:h-[clamp(220px,15vw,360px)] rounded-lg overflow-hidden relative"
-        >
-          <motion.div
-            className="absolute inset-0 w-full h-[120%] lg:-top-[10%]"
-            style={{ y }}
-            initial={{ clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)' }}
-            animate={imageInView ? { clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' } : {}}
-            transition={{ duration: 1.6, ease: [0.87, 0, 0.13, 1] }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={service.image} alt={service.title} className="absolute inset-0 w-full h-full object-cover" />
-          </motion.div>
-        </div>
       </div>
     </li>
   )
@@ -110,25 +164,32 @@ function ServiceItem({ service, index }: { service: Service; index: number }) {
 export function Services() {
   return (
     <section className="px-2 lg:px-4 py-16 lg:py-24">
-      <div className="flex flex-col gap-16 lg:gap-24 bg-neutral-900 px-4 pt-16 lg:pt-24 pb-4 rounded-2xl lg:rounded-[20px]">
-        <div className="lg:grid lg:grid-cols-12 gap-24">
-          <div className="flex flex-col col-span-12 lg:col-span-10 lg:col-start-3">
-            <h2 className="text-xs lg:text-[clamp(14px,0.8vw,18px)] text-neutral-400 uppercase font-medium tracking-wider mb-2">
-              Services
-            </h2>
-            <p className="text-neutral-100 text-[clamp(24px,3.3vw,56px)] font-medium leading-[1.1] lg:leading-[1.05]">
-              Evolving with every brief and built for impact, my process spans design, development,
-              and brand strategy—aligning vision with execution to bring clarity and edge to every
-              project.
-            </p>
+      <div
+        data-surface="dark"
+        className="bg-neutral-900 rounded-2xl lg:rounded-[20px] px-4 lg:px-6 pt-16 lg:pt-24 pb-4 lg:pb-6"
+      >
+        {/* Caps the measure so the section does not stretch on very wide displays. */}
+        <div className="mx-auto w-full max-w-[1600px] flex flex-col gap-[clamp(48px,6vw,96px)]">
+          <div className="lg:grid lg:grid-cols-12 lg:gap-x-[clamp(20px,2vw,32px)]">
+            {/* Starts at col 2 so the intro aligns with the pillar titles below. */}
+            <div className="flex flex-col lg:col-start-2 lg:col-span-11">
+              <h2 className="text-[clamp(11px,0.8vw,14px)] text-neutral-400 uppercase font-medium tracking-wider mb-3">
+                Services
+              </h2>
+              <p className="text-neutral-100 text-[clamp(22px,3vw,52px)] font-medium leading-[1.15] lg:leading-[1.08] max-w-[26ch] lg:max-w-[22ch] xl:max-w-none">
+                Some of this ran on a billboard in Casablanca. Some of it lasted six seconds on a
+                phone. It all started as one idea.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col bg-neutral-800 rounded-xl lg:rounded-2xl px-4 lg:px-5">
-          <ul className="flex flex-col">
-            {services.map((s, i) => (
-              <ServiceItem key={s.title} service={s} index={i} />
-            ))}
-          </ul>
+
+          <div className="bg-neutral-800 rounded-xl lg:rounded-2xl px-[clamp(16px,1.6vw,28px)]">
+            <ul className="flex flex-col">
+              {services.map((s, i) => (
+                <ServiceItem key={s.title} service={s} index={i} />
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

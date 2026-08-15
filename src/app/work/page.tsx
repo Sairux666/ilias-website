@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { WorkIndex } from '@/components/sections/WorkIndex'
 
 export const metadata: Metadata = {
-  title: 'Work | Jason Zubiate',
-  description: 'Selected design engineering work — portfolios, products, and brand sites.',
+  title: 'Work | Ilias Chakri',
+  description:
+    'Selected campaign design, motion and AI production work by Ilias Chakri, graphic and motion designer in Casablanca.',
 }
 
 export default function WorkPage() {
