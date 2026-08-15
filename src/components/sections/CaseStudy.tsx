@@ -273,6 +273,8 @@ function TagList({ items }: { items: string[] }) {
 /* /work/[slug] body: a dark rounded shell, centered on wide screens, with a
  * title, a metadata card, a hero asset, and a WPP-style 2-column editorial
  * spine (heading left, story copy right). */
+const contentPadding = 'px-4 sm:px-6 md:px-8'
+
 export function CaseStudy({ project }: { project: WorkProject }) {
   const spine = project.spine
   const hasSpine = Boolean(
@@ -291,7 +293,7 @@ export function CaseStudy({ project }: { project: WorkProject }) {
       <div className="w-full px-2 sm:px-4 md:px-6 py-4 mx-auto">
         <div
           data-surface="dark"
-          className="relative flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-[28px] lg:rounded-[32px] bg-neutral-900"
+          className="relative flex flex-col items-center gap-8 lg:gap-10 px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-[28px] lg:rounded-[32px] bg-neutral-900"
         >
           <Link
             href="/#work"
@@ -301,7 +303,7 @@ export function CaseStudy({ project }: { project: WorkProject }) {
             {content.caseStudy.backToWorkLabel}
           </Link>
 
-          <div className="w-full flex flex-col items-center gap-3 lg:gap-5">
+          <div className={`w-full flex flex-col items-center gap-3 lg:gap-5 ${contentPadding}`}>
             <RevealText
               as="h1"
               className="w-full text-neutral-100 text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
@@ -319,26 +321,28 @@ export function CaseStudy({ project }: { project: WorkProject }) {
             )}
           </div>
 
-          <div className="w-full px-4 lg:px-5">
+          <div className={`w-full ${contentPadding}`}>
             <MetaCard project={project} hasFilm={hasFilm} />
           </div>
 
           {project.heroAsset && (
-            <div className="w-full aspect-[16/9] overflow-hidden rounded-2xl">
-              {project.heroAsset.kind === 'image' ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={project.heroAsset.src}
-                  alt={project.heroAsset.alt ?? ''}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <MediaRenderer item={project.heroAsset} className="w-full h-full" />
-              )}
+            <div className={`w-full ${contentPadding}`}>
+              <div className="w-full aspect-[16/9] overflow-hidden rounded-2xl">
+                {project.heroAsset.kind === 'image' ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={project.heroAsset.src}
+                    alt={project.heroAsset.alt ?? ''}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <MediaRenderer item={project.heroAsset} className="w-full h-full" />
+                )}
+              </div>
             </div>
           )}
 
-          <div className="w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] px-4 lg:px-5 pt-5 lg:pt-6 pb-4 lg:pb-5 rounded-lg lg:rounded-xl bg-neutral-800">
+          <div className={`w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] ${contentPadding} pt-5 lg:pt-6 pb-4 lg:pb-5 rounded-lg lg:rounded-xl bg-neutral-800`}>
             {hasSpine && (
               <div className="flex flex-col">
                 <SpinePart section={spine?.brief} />

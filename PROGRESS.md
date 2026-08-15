@@ -121,6 +121,20 @@
   gone, divider class applied correctly. Text and border only change, no
   width or layout impact, so no overflow risk at any breakpoint.
 
+- Case study page horizontal margins unified. Title, metadata card, hero key
+  visual and the story/video box all now share one identical inner padding
+  (px-4 sm:px-6 md:px-8 in CaseStudy.tsx), so their left and right edges are
+  perfectly flush at every width instead of the hero sitting flush with the
+  dark shell while the metadata card and story box sat inset further. Top
+  level vertical gap between title, metadata card, hero and story box changed
+  from an uneven clamp (64px to 200px) to a uniform gap-8 lg:gap-10, so
+  spacing rhythm matches down the page. No copy changed. Verified via the
+  running dev server's rendered HTML: all four blocks share the exact same
+  padding classes, no leftover mismatched px-4 lg:px-5 or clamp gap remains.
+  Relative units and flex/grid only, so overflow risk is low across 375 to
+  2560px, but no Playwright/browser automation tool was available this
+  session so no in-browser visual screenshots were taken.
+
 ## IN PROGRESS
 - Case study page now matches itsjay.us edge-to-edge width. Outer wrapper
   around the dark card changed from a centered max-w-[1440px] box to a full
