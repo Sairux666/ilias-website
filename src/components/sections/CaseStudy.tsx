@@ -288,10 +288,10 @@ export function CaseStudy({ project }: { project: WorkProject }) {
 
   return (
     <main className="bg-neutral-100 pt-[200px] md:pt-[clamp(128px,12vw,500px)]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 w-full">
+      <div className="w-full px-2 sm:px-4 md:px-6 py-4 mx-auto">
         <div
           data-surface="dark"
-          className="relative flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900"
+          className="relative flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-[28px] lg:rounded-[32px] bg-neutral-900"
         >
           <Link
             href="/#work"

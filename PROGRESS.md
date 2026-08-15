@@ -113,8 +113,19 @@
   corners at every width, credits box confirmed absent.
 
 ## IN PROGRESS
-- Nothing. Session ended cleanly.
-  (If the browser check showed something half done, replace this line with it.)
+- Case study page now matches itsjay.us edge-to-edge width. Outer wrapper
+  around the dark card changed from a centered max-w-[1440px] box to a full
+  width w-full with slim px-2/sm:px-4/md:px-6 gutters, so the dark card
+  stretches across virtually the whole viewport on wide screens instead of
+  sitting in a centered column. Dark card corners enlarged to rounded-[28px]
+  (rounded-[32px] on large screens) to match the reference site's rounder
+  edges. Title, metadata card, hero media and story sections already used
+  full interior width so no changes were needed there. Verified by reading
+  the rendered HTML from the running dev server (no Playwright/browser
+  automation tool available in this session, so no visual screenshots were
+  taken); the CSS uses only relative units and flex/grid, so overflow risk
+  at 375 to 2560px is low, but a manual look in-browser is recommended
+  before calling this fully signed off.
 
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
