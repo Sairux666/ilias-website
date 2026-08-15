@@ -49,6 +49,8 @@ export function VideoPlayer({ src, poster, alt, className = '' }: VideoPlayerPro
     const video = videoRef.current
     if (video) {
       video.currentTime = 0
+      video.volume = 1
+      video.muted = false
       video.play()
     }
     setPhase('playing')
