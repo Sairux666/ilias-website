@@ -112,6 +112,15 @@
   hero and video measured at exactly a 16:9 ratio with 16px (rounded-2xl)
   corners at every width, credits box confirmed absent.
 
+- Redundant top divider line above "The brief" (first story section) removed
+  on the case study page: the border-top on story sections now skips the
+  first one (first:border-t-0 in CaseStudy.tsx), so dividers only appear
+  between subsequent sections. Fanta case study Part 02 heading changed from
+  "The hard part" to "The challenge" in src/data/work.ts. Verified via the
+  running dev server's rendered HTML: new heading text present, old text
+  gone, divider class applied correctly. Text and border only change, no
+  width or layout impact, so no overflow risk at any breakpoint.
+
 ## IN PROGRESS
 - Case study page now matches itsjay.us edge-to-edge width. Outer wrapper
   around the dark card changed from a centered max-w-[1440px] box to a full

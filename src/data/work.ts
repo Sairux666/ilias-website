@@ -129,7 +129,7 @@ export const workProjects: WorkProject[] = [
           "Fanta ran a national promo on 1.5L bottles. Buy a bottle, scan the QR code on the label, enter the code under the cap, and win a scooter, a phone voucher or phone credit. It needed a key visual and a launch film that could explain all three steps and still look like Fanta. One week from blank page to delivered masters.",
       },
       challenge: {
-        heading: "The hard part",
+        heading: "The challenge",
         body:
           "Three steps, fifteen seconds, in Darija. The same idea had to hold on a motorway billboard, corner store POS, and a phone screen held at arm's length.",
       },
