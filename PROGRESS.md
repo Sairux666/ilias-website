@@ -52,9 +52,8 @@
   no loop, shows poster + replay button when it ends. Video and poster paths
   stored as strings on the gallery item in src/data/work.ts. VimeoEmbed left
   in place, unused, for future longer films.
-  WATCH: poster file public/portfolio/fanta/fanta-promo-campaign-film-poster.webp
-  does not exist yet, so a grey placeholder shows instead of the poster until
-  it's added.
+  Poster now points at the existing fanta-promo-campaign-kv.webp (confirmed
+  by Ilias), no placeholder needed.
 
 ## IN PROGRESS
 - Nothing. Session ended cleanly.

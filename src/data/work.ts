@@ -59,7 +59,7 @@ export const workProjects: WorkProject[] = [
           {
             kind: "hosted-video",
             src: "/portfolio/fanta/fanta-promo-campaign-15sec-film.mp4",
-            poster: "/portfolio/fanta/fanta-promo-campaign-film-poster.webp",
+            poster: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
             alt: "Fanta Morocco, Scani W Rbe7, 15 second film",
           },
         ],
