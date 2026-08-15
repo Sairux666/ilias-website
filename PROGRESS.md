@@ -188,6 +188,20 @@
   1440, 1920, 2560: page renders, no horizontal overflow, padding equal on
   all four sides at each width.
 
+- Fanta homepage card now points at its real assets instead of the key
+  visual. cover changed to /portfolio/fanta/card-fanta.webp, icon changed to
+  /portfolio/fanta/fanta-logo.webp, both in src/data/work.ts. The circular
+  logo badge in WorkCard.tsx had no object-fit set, so a non-square logo
+  would have stretched inside its rounded-full frame; added object-contain
+  plus a neutral-800 fill so it sits centred and clean instead of touching
+  the circle's edges. The card thumbnail already used object-cover on a
+  fixed aspect-[4/3] box, unchanged. Verified via the running dev server:
+  both new asset paths return 200 and appear in the homepage HTML in place
+  of the old key visual path. No Playwright/browser automation tool was
+  available this session, so no in-browser visual screenshots were taken
+  across the 375 to 2560px breakpoints; a manual look in-browser is
+  recommended before calling this fully signed off.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance

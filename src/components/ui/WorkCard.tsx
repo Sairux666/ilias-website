@@ -131,7 +131,7 @@ export function WorkCard({
                 alt=""
                 aria-hidden="true"
                 loading="lazy"
-                className="w-6 h-6 lg:w-8 lg:h-8 rounded-full shrink-0"
+                className="w-6 h-6 lg:w-8 lg:h-8 rounded-full shrink-0 object-contain bg-neutral-800"
               />
               <p className="text-[clamp(13px,1.2vw,18px)] uppercase font-semibold text-neutral-100 tracking-wide truncate">
                 {project.title}

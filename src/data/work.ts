@@ -97,8 +97,8 @@ export const workProjects: WorkProject[] = [
     subtitle: "Scan and win, in Darija, in fifteen seconds.",
     category: "Campaign",
     year: "2026",
-    icon: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
-    cover: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
+    icon: "/portfolio/fanta/fanta-logo.webp",
+    cover: "/portfolio/fanta/card-fanta.webp",
     previewVideo: "/portfolio/fanta/fanta-promo-campaign-15sec-film.mp4",
     services: [
       "Art Direction",
