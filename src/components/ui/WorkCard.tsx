@@ -90,7 +90,7 @@ export function WorkCard({
         onPointerEnter={(e) => e.pointerType !== 'touch' && setHovered(true)}
         onPointerLeave={() => setHovered(false)}
         data-surface="dark"
-        className="flex flex-col gap-4 lg:gap-5 px-3 lg:px-4 pt-3 lg:pt-4 pb-5 lg:pb-6 rounded-xl lg:rounded-2xl bg-neutral-900 cursor-pointer group relative"
+        className="flex flex-col gap-4 lg:gap-5 px-3 lg:px-4 pt-3 lg:pt-4 pb-5 lg:pb-6 rounded-xl lg:rounded-2xl bg-neutral-900 cursor-pointer group relative focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-100"
       >
         {/* Fixed ratio at every breakpoint so media never stretches or squashes. */}
         <div className="relative rounded-lg lg:rounded-xl overflow-hidden w-full aspect-[4/3]">

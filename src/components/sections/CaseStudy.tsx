@@ -1,8 +1,30 @@
 'use client'
 
+import Link from 'next/link'
 import { RevealText } from '@/components/ui/RevealText'
 import { VimeoEmbed } from '@/components/ui/VimeoEmbed'
 import type { WorkProject, LocalMediaItem } from '@/data/work'
+
+function ArrowLeft() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4"
+      aria-hidden="true"
+    >
+      <path d="M19 12H5" />
+      <path d="m12 19-7-7 7-7" />
+    </svg>
+  )
+}
 
 function ArrowUpRight() {
   return (
@@ -52,8 +74,16 @@ export function CaseStudy({ project }: { project: WorkProject }) {
     <main className="bg-neutral-100 px-2 lg:px-4 pt-[200px] md:pt-[clamp(128px,12vw,500px)]">
       <div
         data-surface="dark"
-        className="flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900"
+        className="relative flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900"
       >
+        <Link
+          href="/#work"
+          className="group absolute top-5 lg:top-8 left-4 lg:left-8 flex items-center gap-1.5 text-xs lg:text-sm text-neutral-400 uppercase font-medium tracking-wider hover:text-neutral-100 transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-100 rounded"
+        >
+          <ArrowLeft />
+          Back to work
+        </Link>
+
         <RevealText
           as="h1"
           className="w-full text-neutral-100 text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
