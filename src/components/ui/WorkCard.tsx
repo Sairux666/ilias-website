@@ -116,7 +116,7 @@ export function WorkCard({
                 alt={project.title}
                 loading="lazy"
                 decoding="async"
-                className="absolute inset-0 w-full h-full object-cover object-center scale-105 group-hover:scale-100 transition-transform duration-500 ease-in-out"
+                className="absolute inset-0 w-full h-full object-cover object-center scale-100 transition-transform duration-500 group-hover:scale-105 ease-in-out"
               />
             </motion.div>
           </div>

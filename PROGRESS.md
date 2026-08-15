@@ -217,6 +217,20 @@
   in-browser visual screenshots were taken; a manual look in-browser is
   recommended before calling this fully signed off.
 
+- Homepage project card images no longer zoom in by default. WorkCard.tsx had
+  the cover image set to scale-105 on default state with group-hover:scale-100,
+  which blew the image up and cropped it (bottle/scooter/text pushed out of
+  frame) even before any hover. Swapped to the standard pattern: scale-100 by
+  default, group-hover:scale-105, so the image sits at its natural 100% scale
+  until hovered, then zooms in slightly. Fanta thumbnail path confirmed
+  already correct (/portfolio/fanta/card-fanta.webp in src/data/work.ts), no
+  change needed there. Verified via the running dev server: homepage returns
+  200, new scale-100/group-hover:scale-105 classes present on every card
+  image. No Playwright/browser automation tool was available this session, so
+  no in-browser screenshots were taken; CSS uses the same relative units
+  already checked clean at 375 to 2560px, so overflow risk is low, but a
+  manual look in-browser is recommended before calling this fully signed off.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance
