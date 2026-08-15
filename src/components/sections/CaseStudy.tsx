@@ -343,7 +343,7 @@ export function CaseStudy({ project }: { project: WorkProject }) {
           )}
 
           <div className={`w-full ${contentPadding}`}>
-            <div className="w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] px-6 lg:px-10 py-8 lg:py-10 rounded-2xl bg-neutral-800">
+            <div className="w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] p-6 sm:p-8 md:p-10 rounded-2xl bg-neutral-800">
               {hasSpine && (
                 <div className="flex flex-col">
                   <SpinePart section={spine?.brief} />

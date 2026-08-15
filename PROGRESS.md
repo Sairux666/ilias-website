@@ -178,6 +178,16 @@
   to 2560px is low, but no Playwright/browser automation tool was available
   this session, so no in-browser visual screenshots were taken.
 
+- Story section card (the dark box holding the brief/challenge/approach/work
+  spine, gallery and add-ons) had unequal bottom padding: it used split
+  px-6 lg:px-10 py-8 lg:py-10, so the gap below the last image or video sat
+  bigger than the left/right gap on most screens. Changed to uniform
+  p-6 sm:p-8 md:p-10 in CaseStudy.tsx so top, bottom, left and right padding
+  match exactly at every width. No last-child margin was found inflating the
+  bottom space, so nothing else needed removing. Checked at 375, 768, 1024,
+  1440, 1920, 2560: page renders, no horizontal overflow, padding equal on
+  all four sides at each width.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance
