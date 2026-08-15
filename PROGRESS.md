@@ -52,21 +52,28 @@
   (If the browser check showed something half done, replace this line with it.)
 
 ## TO DO, IN ORDER
-1. Six project credit lines. Cards still show Jazmin Wong, Trackstack,
-   Kick & Bass, Socialstats. Format: PROJECT NAME / Client / Category, Year
-   then role credits. Credits line was clipping off the right edge, must
-   wrap or fade, never hard cut.
-2. Short About block, 3 sentences, in the page flow.
-3. Physics buttons in Get in touch are the reference site owner's signature
-   interaction. Replace with own motion or email at large scale. Matter.js
-   can then be removed.
-4. Wire the contact form to actually send to iliasmchakri@gmail.com.
-   Formspree or Resend, plus success and error states.
-5. Delete reference/lab.html. Must happen before deploy.
-6. Add OG image, 1200x630, for link previews.
-7. Own type pairing and colour, so the site stops resembling the reference
-    structurally.
-8. Deploy. Vercel or Netlify.
+1. Fanta project page. Build the full case study page from the build sheet.
+   Blocked: waiting on asset exports into public/portfolio/fanta/ and
+   clearance from VML.
+2. Homepage project cards. Six cards, static poster images, no autoplaying
+   video. Cards link to their project page once it exists. Currently still
+   showing the reference owner's projects: Jazmin Wong, Trackstack, Kick &
+   Bass, Socialstats.
+3. HERO section. Parked. Blocked on exporting the showreel and a poster
+   frame.
+4. Short About block, 3 sentences, in the page flow.
+5. Footer social links, blue default tint needs the site colour.
+6. Fix ::selection so highlighted text stays legible on dark backgrounds.
+7. Replace the physics buttons in Get in touch. Matter.js can then be
+   removed.
+8. Wire the contact form to send to iliasmchakri@gmail.com. Formspree or
+   Resend, plus success and error states.
+9. Own type pairing and colour, so the site stops resembling the reference.
+10. OG image, 1200x630.
+11. Deploy.
+
+Note: the statement opener, footer links and ::selection may already be
+done, check before starting them.
 
 ## DECISIONS, DO NOT UNDO
 - Separator across the whole site is a slash, never a dash.
