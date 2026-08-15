@@ -135,6 +135,20 @@
   2560px, but no Playwright/browser automation tool was available this
   session so no in-browser visual screenshots were taken.
 
+- Story section container (holds "The brief", "The challenge" etc, plus the
+  gallery and video) no longer sits wider than the Hero Key Visual and
+  metadata card above it. It now shares the exact same outer wrapper div
+  (w-full px-4 sm:px-6 md:px-8) as those two, instead of applying that
+  padding to itself, so its rounded card edges are pixel-flush with them at
+  every width. Corner rounding unified to rounded-2xl across the metadata
+  card, hero image, story section card and inline media thumbnails (some
+  previously used rounded-lg/rounded-xl). No copy changed. Verified by
+  reading the rendered HTML from the running dev server: all three wrapper
+  divs share the identical class string. No Playwright/browser automation
+  tool was available this session, so no in-browser visual screenshots were
+  taken; a manual look in-browser is recommended before calling this fully
+  signed off.
+
 ## IN PROGRESS
 - Case study page now matches itsjay.us edge-to-edge width. Outer wrapper
   around the dark card changed from a centered max-w-[1440px] box to a full

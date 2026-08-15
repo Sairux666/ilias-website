@@ -54,7 +54,7 @@ function ArrowUpRight() {
 
 function Media({ item, className }: { item: LocalMediaItem; className: string }) {
   return (
-    <div className={`rounded-lg lg:rounded-xl overflow-hidden relative ${className}`}>
+    <div className={`rounded-2xl overflow-hidden relative ${className}`}>
       {item.kind === 'video' ? (
         <video
           src={item.src}
@@ -121,7 +121,7 @@ function MetaCard({ project, hasFilm }: { project: WorkProject; hasFilm: boolean
   const clientSubtext = agency ? `${project.year} / ${content.caseStudy.viaConnector} ${agency}` : project.year
 
   return (
-    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 px-6 lg:px-10 py-8 lg:py-10 rounded-lg lg:rounded-xl bg-neutral-800">
+    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 px-6 lg:px-10 py-8 lg:py-10 rounded-2xl bg-neutral-800">
       {spec?.client && (
         <div className="flex flex-col gap-3 min-w-0">
           <RevealText className={eyebrowClass}>{labels.clientLabel}</RevealText>
@@ -342,54 +342,56 @@ export function CaseStudy({ project }: { project: WorkProject }) {
             </div>
           )}
 
-          <div className={`w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] ${contentPadding} pt-5 lg:pt-6 pb-4 lg:pb-5 rounded-lg lg:rounded-xl bg-neutral-800`}>
-            {hasSpine && (
-              <div className="flex flex-col">
-                <SpinePart section={spine?.brief} />
-                <SpinePart section={spine?.challenge} />
-                <SpinePart section={spine?.approach} />
-                <SpinePart
-                  section={spine?.work}
-                  anchorId={hasFilm ? FILM_ANCHOR_ID : undefined}
-                  mediaClassName={hasFilm ? 'w-full' : undefined}
-                />
-              </div>
-            )}
+          <div className={`w-full ${contentPadding}`}>
+            <div className="w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] pt-5 lg:pt-6 pb-4 lg:pb-5 rounded-2xl bg-neutral-800">
+              {hasSpine && (
+                <div className="flex flex-col">
+                  <SpinePart section={spine?.brief} />
+                  <SpinePart section={spine?.challenge} />
+                  <SpinePart section={spine?.approach} />
+                  <SpinePart
+                    section={spine?.work}
+                    anchorId={hasFilm ? FILM_ANCHOR_ID : undefined}
+                    mediaClassName={hasFilm ? 'w-full' : undefined}
+                  />
+                </div>
+              )}
 
-            {project.gallery.length > 0 && (
-              <div className="flex flex-col gap-4 lg:gap-5">
-                {project.gallery.map((row, i) =>
-                  row.layout === 'full' ? (
-                    <MediaRenderer
-                      key={i}
-                      item={row.items[0]}
-                      className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)]"
-                    />
-                  ) : (
-                    <div key={i} className="flex gap-4 lg:gap-5">
-                      <Media
+              {project.gallery.length > 0 && (
+                <div className="flex flex-col gap-4 lg:gap-5">
+                  {project.gallery.map((row, i) =>
+                    row.layout === 'full' ? (
+                      <MediaRenderer
+                        key={i}
                         item={row.items[0]}
-                        className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
+                        className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)]"
                       />
-                      <Media
-                        item={row.items[1]}
-                        className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
-                      />
-                    </div>
-                  )
-                )}
-              </div>
-            )}
+                    ) : (
+                      <div key={i} className="flex gap-4 lg:gap-5">
+                        <Media
+                          item={row.items[0]}
+                          className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
+                        />
+                        <Media
+                          item={row.items[1]}
+                          className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
+                        />
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
 
-            {hasAddons && (
-              <div className="flex flex-col gap-16 lg:gap-24">
-                <AddonBlock label={content.caseStudy.addonLabels.aiPipeline} section={addons?.aiPipeline} />
-                <AddonBlock label={content.caseStudy.addonLabels.storyboards} section={addons?.storyboards} />
-                <AddonBlock label={content.caseStudy.addonLabels.ratioRebuilds} section={addons?.ratioRebuilds} />
-                <AddonBlock label={content.caseStudy.addonLabels.oohInMarket} section={addons?.oohInMarket} />
-                <AddonBlock label={content.caseStudy.addonLabels.payoff} section={addons?.payoff} />
-              </div>
-            )}
+              {hasAddons && (
+                <div className="flex flex-col gap-16 lg:gap-24">
+                  <AddonBlock label={content.caseStudy.addonLabels.aiPipeline} section={addons?.aiPipeline} />
+                  <AddonBlock label={content.caseStudy.addonLabels.storyboards} section={addons?.storyboards} />
+                  <AddonBlock label={content.caseStudy.addonLabels.ratioRebuilds} section={addons?.ratioRebuilds} />
+                  <AddonBlock label={content.caseStudy.addonLabels.oohInMarket} section={addons?.oohInMarket} />
+                  <AddonBlock label={content.caseStudy.addonLabels.payoff} section={addons?.payoff} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
