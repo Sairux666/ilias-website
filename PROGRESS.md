@@ -202,6 +202,21 @@
   across the 375 to 2560px breakpoints; a manual look in-browser is
   recommended before calling this fully signed off.
 
+- Homepage project card image container tuned to crop less aggressively.
+  The shared card component (WorkCard.tsx, used by both the homepage
+  Selected Work grid and the /work index) previously boxed every cover in
+  aspect-[4/3] (1.333:1). Checked the actual Fanta thumbnail file
+  (card-fanta.webp) and it is 1470x1200px, a 1.225:1 ratio, so the box was
+  cropping more height than the image needs. Changed to aspect-[1.225/1] to
+  match it, and added an explicit object-center class next to the existing
+  object-cover so centring is stated rather than implied. Verified via the
+  running dev server: both new classes render in the homepage HTML. Uses
+  only relative Tailwind units on a w-full box, same pattern already
+  checked clean at 375 to 2560px before this change, but no
+  Playwright/browser automation tool was available this session, so no new
+  in-browser visual screenshots were taken; a manual look in-browser is
+  recommended before calling this fully signed off.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance

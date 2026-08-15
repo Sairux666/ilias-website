@@ -92,8 +92,9 @@ export function WorkCard({
         data-surface="dark"
         className="flex flex-col gap-4 lg:gap-5 px-3 lg:px-4 pt-3 lg:pt-4 pb-5 lg:pb-6 rounded-xl lg:rounded-2xl bg-neutral-900 cursor-pointer group relative focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-100"
       >
-        {/* Fixed ratio at every breakpoint so media never stretches or squashes. */}
-        <div className="relative rounded-lg lg:rounded-xl overflow-hidden w-full aspect-[4/3]">
+        {/* Fixed ratio at every breakpoint so media never stretches or squashes.
+            Matches the 1470x1200 card thumbnail's native ratio so covers crop less. */}
+        <div className="relative rounded-lg lg:rounded-xl overflow-hidden w-full aspect-[1.225/1]">
           <div className="absolute inset-0 bg-neutral-900/30 backdrop-blur-md z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out" />
           {showVideo && (
             <video
@@ -115,7 +116,7 @@ export function WorkCard({
                 alt={project.title}
                 loading="lazy"
                 decoding="async"
-                className="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-500 ease-in-out"
+                className="absolute inset-0 w-full h-full object-cover object-center scale-105 group-hover:scale-100 transition-transform duration-500 ease-in-out"
               />
             </motion.div>
           </div>
