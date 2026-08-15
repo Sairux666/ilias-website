@@ -46,3 +46,10 @@ No horizontal overflow. No clipped or overlapping text at any width.
   them.
 - Videos: muted, looping, preload="metadata", poster image, play only when in
   viewport, respect prefers-reduced-motion, under 3MB each.
+
+## Git
+- Commit after every confirmed task, without me asking. Short clear message.
+- Never push to a remote unless I ask.
+- Never use git commands that discard my work, such as reset --hard, checkout
+  over uncommitted changes, or clean. If you think work needs discarding, ask
+  me first.
