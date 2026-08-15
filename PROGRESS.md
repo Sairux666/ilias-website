@@ -43,6 +43,9 @@
 - Checked at 375, 768, 1024, 1440, 1920, 2560: no horizontal overflow on the
   page, statement wraps cleanly at 375 and fills its column at 2560 without
   looking short.
+- Vimeo embed component added (src/components/ui/VimeoEmbed.tsx). Poster and
+  play button load up front, iframe only loads on click. Wired into the
+  jazmin-wong case study gallery in src/data/work.ts.
 
 ## IN PROGRESS
 - Nothing. Session ended cleanly.

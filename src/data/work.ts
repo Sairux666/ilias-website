@@ -57,7 +57,7 @@ export const workProjects: WorkProject[] = [
             kind: "vimeo",
             vimeoId: "1218443173",
             poster: "/portfolio/fanta/film-poster.webp",
-            alt: "Jazmin Wong project film",
+            alt: "Fanta Morocco, Scani W Rbe7, 15 second film",
           },
         ],
       },

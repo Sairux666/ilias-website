@@ -41,5 +41,8 @@ No horizontal overflow. No clipped or overlapping text at any width.
 - All filenames and folders lowercase, no spaces. Linux servers are case
   sensitive, Windows is not, so capitals and spaces break on deploy.
 - Assets in public/: brand/, clients/, images/, videos/, fonts/
+- New project page assets live in public/portfolio/[project-slug]/. Existing
+  assets under public/images/work/ stay where they are, never move or rename
+  them.
 - Videos: muted, looping, preload="metadata", poster image, play only when in
   viewport, respect prefers-reduced-motion, under 3MB each.
