@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { TagMarquee } from '@/components/ui/TagMarquee'
 
 const EASE = [0.16, 1, 0.3, 1] as const
@@ -53,12 +53,6 @@ export function WorkCard({
   const reduceMotion = useReducedMotion() ?? false
   const showVideo = canHover && !reduceMotion
 
-  const { scrollYProgress } = useScroll({ target: cardRef, offset: ['start end', 'end start'] })
-  const parallaxY = useTransform(scrollYProgress, [0, 1], ['-15%', '5%'])
-  const staticY = useTransform(scrollYProgress, [0, 1], ['0%', '0%'])
-  // Parallax is a scroll-linked repaint per card; skip it where it costs most.
-  const y = isMobile || reduceMotion ? staticY : parallaxY
-
   // The preview is clipped to zero height until the card is hovered, so playing
   // it merely because it scrolled into view streams a file nobody can see —
   // several MB per card. Require in-viewport *and* hovered; anything else pauses.
@@ -108,18 +102,14 @@ export function WorkCard({
               className="absolute top-1/2 -translate-y-[8.333%] left-1/2 -translate-x-1/2 w-[clamp(300px,65%,600px)] h-auto rounded-lg object-cover z-20 [clip-path:polygon(30%_50%,70%_50%,70%_50%,30%_50%)] group-hover:[clip-path:polygon(0_100%,100%_100%,100%_0,0_0)] group-hover:-translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)]"
             />
           )}
-          <div className="w-full h-full">
-            <motion.div className="absolute inset-0 w-full h-[120%] -top-[10%] lg:-top-[15%]" style={{ y }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={project.cover}
-                alt={project.title}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 w-full h-full object-cover object-center scale-100 transition-transform duration-500 group-hover:scale-105 ease-in-out"
-              />
-            </motion.div>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={project.cover}
+            alt={project.title}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover object-center transform-none"
+          />
         </div>
 
         <div className="flex flex-col gap-3 lg:gap-5 px-1 sm:px-2 lg:px-4">

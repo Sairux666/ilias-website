@@ -231,6 +231,21 @@
   already checked clean at 375 to 2560px, so overflow risk is low, but a
   manual look in-browser is recommended before calling this fully signed off.
 
+- Homepage project card images no longer zoom or crop artificially. WorkCard.tsx
+  had a scroll-linked parallax wrapper (h-[120%], negative top offset, a
+  framer-motion y transform) plus a hover scale-105 transform sitting inside
+  the fixed-ratio image box. Both removed: the image is now a single element
+  filling its container exactly (w-full h-full object-cover object-center
+  transform-none), no scaling, no offset, no parallax. Unused useScroll/
+  useTransform hooks removed along with it. Container still locked to the
+  same aspect-[1.225/1] box as before, so layout is unchanged. Verified via
+  the running dev server: new classes present in the rendered homepage HTML.
+  No Playwright/browser automation tool was available this session, so no
+  in-browser screenshots were taken; the change only removes CSS transforms
+  and offsets from an already-checked-clean box, so overflow risk at 375 to
+  2560px is unchanged, but a manual look in-browser is recommended before
+  calling this fully signed off.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance
