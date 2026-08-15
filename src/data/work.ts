@@ -17,6 +17,53 @@ export type GalleryRow =
   | { layout: 'full'; items: [MediaItem] }
   | { layout: 'pair'; items: [LocalMediaItem, LocalMediaItem] }
 
+/* Agency-style spec header, directly below the case study title. Every field
+ * is optional and each renders as its own column only when present, so
+ * portfolio-style projects (no agency, no market) show fewer columns instead
+ * of blank ones. */
+export type SpecHeader = {
+  client?: string
+  role?: string
+  agency?: string
+  /* Second agency name for the "Agency via VML" format, e.g. agency:
+   * "Le Pub", agencyVia: "VML". */
+  agencyVia?: string
+  market?: string
+}
+
+export type SpineSection = {
+  heading?: string
+  body?: string
+  media?: MediaItem
+}
+
+/* The 4-part case study spine: Brief, Challenge, Approach, Work/Ecosystem.
+ * The whole spine collapses if none of the four parts have content, and each
+ * part collapses individually if it has none of its own. */
+export type Spine = {
+  brief?: SpineSection
+  challenge?: SpineSection
+  approach?: SpineSection
+  work?: SpineSection
+}
+
+export type AddonSection = {
+  heading?: string
+  body?: string
+  media?: MediaItem[]
+}
+
+/* Modular add-ons, each an independent conditional slot. */
+export type Addons = {
+  aiPipeline?: AddonSection
+  storyboards?: AddonSection
+  ratioRebuilds?: AddonSection
+  oohInMarket?: AddonSection
+  payoff?: AddonSection
+}
+
+export type CreditEntry = { role: string; name: string }
+
 export type WorkProject = {
   slug: string
   title: string
@@ -29,6 +76,12 @@ export type WorkProject = {
   summary: string
   visitUrl?: string
   gallery: GalleryRow[]
+  heroAsset?: MediaItem
+  spec?: SpecHeader
+  spine?: Spine
+  addons?: Addons
+  credits?: CreditEntry[]
+  tools?: string[]
 }
 
 export const workProjects: WorkProject[] = [

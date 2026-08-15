@@ -54,6 +54,19 @@
   in place, unused, for future longer films.
   Poster now points at the existing fanta-promo-campaign-kv.webp (confirmed
   by Ilias), no placeholder needed.
+- Case study page template rebuilt at /work/[slug]. Top 4-column Spec Header
+  (Client, Role, Agency with "via VML" support, Year / Market) added below
+  the title. Hero Master Asset slot added below the header. Modular 4-part
+  spine added (Part 01 Brief, 02 Challenge, 03 Approach, 04 Work/Ecosystem).
+  Five add-on slots added (AI Pipeline, Storyboards, Ratio Rebuilds, OOH In
+  Market, Payoff). Credits/Tools block added above the existing Next Project
+  link. Every new section is optional in src/data/work.ts and collapses with
+  no gap when a project has no data for it, so the 6 placeholder projects
+  render exactly as before. All new labels live in src/data/content.ts.
+  Checked at 375, 768, 1024, 1440, 1920, 2560 with mock data on all new
+  sections at once: no overflow, mobile spec header sits in a clean 2x2 grid,
+  all add-on slots collapse cleanly when empty. Mock data removed before
+  commit, no real project data added yet.
 
 ## IN PROGRESS
 - Nothing. Session ended cleanly.

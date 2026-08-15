@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { content } from '@/data/content'
 import type { WorkProject } from '@/data/work'
 
 type NavTarget = Pick<WorkProject, 'slug' | 'title' | 'category'> | null
@@ -19,7 +20,7 @@ function NavLink({ project, direction }: { project: NavTarget; direction: 'prev'
     >
       <span className="flex items-center gap-1.5 text-xs lg:text-sm text-neutral-400 uppercase font-medium tracking-wider">
         {!isNext && <Arrow direction="left" />}
-        {isNext ? 'Next project' : 'Previous project'}
+        {isNext ? content.caseStudy.nextProjectLabel : content.caseStudy.previousProjectLabel}
         {isNext && <Arrow direction="right" />}
       </span>
       <span className="text-[clamp(24px,3vw,56px)] font-semibold uppercase tracking-tight leading-none text-neutral-100 group-hover:opacity-80 transition-opacity duration-300">
