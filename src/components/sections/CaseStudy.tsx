@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { RevealText } from '@/components/ui/RevealText'
 import { VimeoEmbed } from '@/components/ui/VimeoEmbed'
+import { VideoPlayer } from '@/components/ui/VideoPlayer'
 import type { WorkProject, LocalMediaItem } from '@/data/work'
 
 function ArrowLeft() {
@@ -158,6 +159,13 @@ export function CaseStudy({ project }: { project: WorkProject }) {
                   <VimeoEmbed
                     key={i}
                     vimeoId={row.items[0].vimeoId}
+                    poster={row.items[0].poster}
+                    alt={row.items[0].alt}
+                  />
+                ) : row.items[0].kind === 'hosted-video' ? (
+                  <VideoPlayer
+                    key={i}
+                    src={row.items[0].src}
                     poster={row.items[0].poster}
                     alt={row.items[0].alt}
                   />

@@ -8,7 +8,10 @@
 
 export type LocalMediaItem = { kind: 'image'; src: string } | { kind: 'video'; src: string }
 
-export type MediaItem = LocalMediaItem | { kind: 'vimeo'; vimeoId: string; poster: string; alt: string }
+export type MediaItem =
+  | LocalMediaItem
+  | { kind: 'vimeo'; vimeoId: string; poster: string; alt: string }
+  | { kind: 'hosted-video'; src: string; poster: string; alt: string }
 
 export type GalleryRow =
   | { layout: 'full'; items: [MediaItem] }
@@ -54,9 +57,9 @@ export const workProjects: WorkProject[] = [
         layout: 'full',
         items: [
           {
-            kind: "vimeo",
-            vimeoId: "1218443173",
-            poster: "/portfolio/fanta/film-poster.webp",
+            kind: "hosted-video",
+            src: "/portfolio/fanta/fanta-promo-campaign-15sec-film.mp4",
+            poster: "/portfolio/fanta/fanta-promo-campaign-film-poster.webp",
             alt: "Fanta Morocco, Scani W Rbe7, 15 second film",
           },
         ],

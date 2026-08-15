@@ -46,6 +46,15 @@
 - Vimeo embed component added (src/components/ui/VimeoEmbed.tsx). Poster and
   play button load up front, iframe only loads on click. Wired into the
   jazmin-wong case study gallery in src/data/work.ts.
+- Vimeo embed on the jazmin-wong Fanta film swapped for a self-hosted video
+  player (src/components/ui/VideoPlayer.tsx), reusable on future project
+  pages. Poster-only on load, plays with sound and native controls on click,
+  no loop, shows poster + replay button when it ends. Video and poster paths
+  stored as strings on the gallery item in src/data/work.ts. VimeoEmbed left
+  in place, unused, for future longer films.
+  WATCH: poster file public/portfolio/fanta/fanta-promo-campaign-film-poster.webp
+  does not exist yet, so a grey placeholder shows instead of the poster until
+  it's added.
 
 ## IN PROGRESS
 - Nothing. Session ended cleanly.
