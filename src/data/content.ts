@@ -42,6 +42,8 @@ export const content = {
     },
     creditsHeading: 'Credits',
     toolsHeading: 'Tools',
+    formatsHeading: 'Formats',
+    timelineHeading: 'Timeline',
     previousProjectLabel: 'Previous project',
     nextProjectLabel: 'Next project',
   },

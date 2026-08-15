@@ -63,7 +63,11 @@ function Media({ item, className }: { item: LocalMediaItem; className: string })
         />
       ) : (
         /* eslint-disable-next-line @next/next/no-img-element */
-        <img src={item.src} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={item.src}
+          alt={item.kind === 'image' ? item.alt ?? '' : ''}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       )}
     </div>
   )
@@ -194,44 +198,87 @@ function AddonBlock({ label, section }: { label: string; section?: AddonSection 
   )
 }
 
-/* Credits / Tools block at the bottom of the case study. Collapses entirely
- * when the project has neither. */
+function TagList({ items }: { items: string[] }) {
+  return (
+    <ul className="flex gap-1.5 2xl:gap-2 flex-wrap">
+      {items.map((t) => (
+        <li
+          key={t}
+          className="font-mono text-[10px] lg:text-[clamp(12px,0.7vw,16px)] text-neutral-100 uppercase tracking-[1.1px] bg-neutral-100/10 px-2 3xl:px-3 pt-2 pb-1.5 rounded-md whitespace-nowrap"
+        >
+          {t}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/* Credits / Tools / Formats / Timeline block at the bottom of the case
+ * study. Each of the four is independently optional and collapses on its
+ * own; the whole block collapses when none are present. Credits renders as
+ * either a role/name list or a single descriptive paragraph
+ * (creditsText), whichever the project supplies. */
 function CreditsTools({ project }: { project: WorkProject }) {
-  const hasCredits = Boolean(project.credits && project.credits.length > 0)
+  const hasCreditsList = Boolean(project.credits && project.credits.length > 0)
+  const hasCreditsText = Boolean(project.creditsText)
+  const hasCredits = hasCreditsList || hasCreditsText
   const hasTools = Boolean(project.tools && project.tools.length > 0)
-  if (!hasCredits && !hasTools) return null
+  const hasFormats = Boolean(project.formats && project.formats.length > 0)
+  const hasTimeline = Boolean(project.timeline)
+  if (!hasCredits && !hasTools && !hasFormats && !hasTimeline) return null
 
   return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+    <div className="w-full flex flex-col gap-8 lg:gap-12">
       {hasCredits && (
         <div className="flex flex-col gap-4">
           <RevealText className={eyebrowClass}>{content.caseStudy.creditsHeading}</RevealText>
-          <ul className="flex flex-col gap-2">
-            {project.credits!.map((c) => (
-              <li
-                key={`${c.role}-${c.name}`}
-                className="flex justify-between gap-4 text-neutral-100 text-sm lg:text-base font-medium"
-              >
-                <span className="text-neutral-400 uppercase tracking-wide">{c.role}</span>
-                <span className="text-right">{c.name}</span>
-              </li>
-            ))}
-          </ul>
+          {hasCreditsText ? (
+            <RevealText
+              className="text-neutral-100 text-sm lg:text-base font-medium leading-[1.5] max-w-[65ch]"
+              delay={0.05}
+            >
+              {project.creditsText}
+            </RevealText>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {project.credits!.map((c) => (
+                <li
+                  key={`${c.role}-${c.name}`}
+                  className="flex justify-between gap-4 text-neutral-100 text-sm lg:text-base font-medium"
+                >
+                  <span className="text-neutral-400 uppercase tracking-wide">{c.role}</span>
+                  <span className="text-right">{c.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
-      {hasTools && (
-        <div className="flex flex-col gap-4">
-          <RevealText className={eyebrowClass}>{content.caseStudy.toolsHeading}</RevealText>
-          <ul className="flex gap-1.5 2xl:gap-2 flex-wrap">
-            {project.tools!.map((t) => (
-              <li
-                key={t}
-                className="font-mono text-[10px] lg:text-[clamp(12px,0.7vw,16px)] text-neutral-100 uppercase tracking-[1.1px] bg-neutral-100/10 px-2 3xl:px-3 pt-2 pb-1.5 rounded-md whitespace-nowrap"
+      {(hasTools || hasFormats || hasTimeline) && (
+        <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+          {hasTools && (
+            <div className="flex flex-col gap-4">
+              <RevealText className={eyebrowClass}>{content.caseStudy.toolsHeading}</RevealText>
+              <TagList items={project.tools!} />
+            </div>
+          )}
+          {hasFormats && (
+            <div className="flex flex-col gap-4">
+              <RevealText className={eyebrowClass}>{content.caseStudy.formatsHeading}</RevealText>
+              <TagList items={project.formats!} />
+            </div>
+          )}
+          {hasTimeline && (
+            <div className="flex flex-col gap-4">
+              <RevealText className={eyebrowClass}>{content.caseStudy.timelineHeading}</RevealText>
+              <RevealText
+                className="text-neutral-100 text-sm lg:text-base font-medium"
+                delay={0.05}
               >
-                {t}
-              </li>
-            ))}
-          </ul>
+                {project.timeline}
+              </RevealText>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -267,12 +314,23 @@ export function CaseStudy({ project }: { project: WorkProject }) {
           {content.caseStudy.backToWorkLabel}
         </Link>
 
-        <RevealText
-          as="h1"
-          className="w-full text-neutral-100 text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
-        >
-          {project.title}
-        </RevealText>
+        <div className="w-full flex flex-col items-center gap-3 lg:gap-5">
+          <RevealText
+            as="h1"
+            className="w-full text-neutral-100 text-center text-5xl md:text-[clamp(64px,8vw,180px)] font-bold uppercase leading-[0.85]"
+          >
+            {project.title}
+          </RevealText>
+
+          {project.subtitle && (
+            <RevealText
+              className="w-full text-neutral-400 text-center text-sm lg:text-[clamp(16px,1.2vw,24px)] font-medium tracking-wide"
+              delay={0.05}
+            >
+              {project.subtitle}
+            </RevealText>
+          )}
+        </div>
 
         <SpecHeader project={project} />
 

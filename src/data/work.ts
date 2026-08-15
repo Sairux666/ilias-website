@@ -6,7 +6,7 @@
  * Assets live under /public/images/work/<slug>/ and /public/videos/.
  */
 
-export type LocalMediaItem = { kind: 'image'; src: string } | { kind: 'video'; src: string }
+export type LocalMediaItem = { kind: 'image'; src: string; alt?: string } | { kind: 'video'; src: string }
 
 export type MediaItem =
   | LocalMediaItem
@@ -67,6 +67,7 @@ export type CreditEntry = { role: string; name: string }
 export type WorkProject = {
   slug: string
   title: string
+  subtitle?: string
   category: string
   year: string
   icon: string
@@ -80,11 +81,73 @@ export type WorkProject = {
   spec?: SpecHeader
   spine?: Spine
   addons?: Addons
+  /* Either a role/name credits list, or a single descriptive credits
+   * paragraph (creditsText) when the work was one person across many roles. */
   credits?: CreditEntry[]
+  creditsText?: string
   tools?: string[]
+  formats?: string[]
+  timeline?: string
 }
 
 export const workProjects: WorkProject[] = [
+  {
+    slug: "fanta",
+    title: "FANTA PROMO CAMPAIGN",
+    subtitle: "Scan and win, in Darija, in fifteen seconds.",
+    category: "Campaign",
+    year: "2026",
+    icon: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
+    cover: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
+    previewVideo: "/portfolio/fanta/fanta-promo-campaign-15sec-film.mp4",
+    services: ["Art Direction", "Motion Design", "Key Visual", "AI Animation"],
+    summary:
+      "A national scan and win promo for Fanta 1.5L bottles, taken from blank page to key visual and launch film in one week.",
+    gallery: [],
+    heroAsset: {
+      kind: "image",
+      src: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
+      alt: "Fanta Promo Campaign master key visual",
+    },
+    spec: {
+      client: "Fanta (The Coca-Cola Company)",
+      role: "Art Direction / Motion",
+      agency: "VML",
+    },
+    spine: {
+      brief: {
+        heading: "The brief",
+        body:
+          "Fanta ran a national promo on 1.5L bottles. Buy a bottle, scan the QR code on the label, enter the code under the cap, and win a scooter, a phone voucher or phone credit. It needed a key visual and a launch film that could explain all three steps and still look like Fanta. One week from blank page to delivered masters.",
+      },
+      challenge: {
+        heading: "The hard part",
+        body:
+          "Three steps, fifteen seconds, in Darija. The same idea had to hold on a motorway billboard, corner store POS, and a phone screen held at arm's length.",
+      },
+      approach: {
+        heading: "Make the mechanic the story",
+        body:
+          "Promo work usually buries the instructions at the end. We led with them instead. Every shot does one job: taste, prize, step one, step two, payoff. Nothing decorative, nothing that slows the read. Darija for the voice, Arabic script and Latin transliteration side by side on screen, because that is how people actually read here.",
+      },
+      work: {
+        heading: "Fifteen seconds, three steps",
+        body:
+          "Frames were designed as stills, then animated with Seedance 2.0. Type, UI and prize elements animated in After Effects on top. AI handled camera moves and liquid. It did not make the design decisions, and it is not the reason the film works.",
+        media: {
+          kind: "hosted-video",
+          src: "/portfolio/fanta/fanta-promo-campaign-15sec-film.mp4",
+          poster: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
+          alt: "Fanta Promo Campaign film, fifteen seconds, three steps",
+        },
+      },
+    },
+    creditsText:
+      "Concept and storyboard. Key visual, built from scratch. Frame design. AI animation. Motion design, type and UI. Adaptations across 16:9, 1:1 and 9:16. Strategy, edit, sound design and voiceover by the team at VML.",
+    tools: ["Photoshop", "Illustrator", "After Effects", "Seedance 2.0"],
+    formats: ["16:9", "1:1", "9:16"],
+    timeline: "One week",
+  },
   {
     slug: "jazmin-wong",
     title: "Jazmin Wong",

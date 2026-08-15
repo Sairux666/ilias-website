@@ -68,14 +68,26 @@
   all add-on slots collapse cleanly when empty. Mock data removed before
   commit, no real project data added yet.
 
+- Fanta case study data populated in src/data/work.ts (slug "fanta"): spec
+  header, hero key visual, all 4 spine parts (Brief, Challenge, Approach,
+  Work with the 15 second film), credits, tools, formats and timeline. Only
+  existing assets used (fanta-promo-campaign-kv.webp and
+  fanta-promo-campaign-15sec-film.mp4). Case study template extended to
+  display the new fields: a subtitle line under the title, and a paragraph
+  form of Credits plus new Formats and Timeline slots (all in
+  CaseStudy.tsx and content.ts), each collapsing cleanly when a project
+  doesn't supply them. Checked at 375, 768, 1024, 1440, 1920, 2560: no
+  horizontal overflow, no clipped text, all sections render.
+
 ## IN PROGRESS
 - Nothing. Session ended cleanly.
   (If the browser check showed something half done, replace this line with it.)
 
 ## TO DO, IN ORDER
-1. Fanta project page. Build the full case study page from the build sheet.
-   Blocked: waiting on asset exports into public/portfolio/fanta/ and
-   clearance from VML.
+1. Fanta project page. Data is in, page renders correctly at all
+   breakpoints. Still needs final clearance sign off from VML before going
+   fully live, and the homepage card (see next item) still points at
+   placeholder projects instead of this one.
 2. Homepage project cards. Six cards, static poster images, no autoplaying
    video. Cards link to their project page once it exists. Currently still
    showing the reference owner's projects: Jazmin Wong, Trackstack, Kick &
