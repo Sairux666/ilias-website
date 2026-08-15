@@ -60,7 +60,7 @@ export function VideoPlayer({ src, poster, alt, className = '' }: VideoPlayerPro
 
   return (
     <div
-      className={`relative w-full aspect-video overflow-hidden rounded-lg lg:rounded-xl bg-neutral-800 ${className}`}
+      className={`relative w-full aspect-[16/9] overflow-hidden rounded-2xl bg-neutral-800 ${className}`}
     >
       <video
         ref={videoRef}

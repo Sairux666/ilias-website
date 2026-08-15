@@ -94,6 +94,23 @@
   1920, 2560 with Playwright: no horizontal overflow, no console errors,
   mobile story sections stack cleanly, watch film link scrolls to the
   right section.
+- Case study container widened to max-w-[1440px] (from max-w-7xl) so it
+  fills wide screens properly. Giant title confirmed rendering above the
+  3-column metadata card (already the case, verified in browser). Hero key
+  visual and the main video player (self-hosted VideoPlayer component) now
+  both enforce a strict aspect-[16/9] box with overflow-hidden rounded-2xl
+  and object-cover, so they stay crisp 16:9 at every width instead of the
+  old clamp-based heights. The "Credits & details" bottom box (Tools,
+  Formats, Timeline, Team) removed completely from the page, which now
+  flows straight from the story sections to the Next Project link; the
+  CreditsTools component was deleted from CaseStudy.tsx. The tools,
+  formats, timeline and credits fields still exist in src/data/work.ts,
+  just unused on the page. Note: changing the shared VideoPlayer
+  component's corner radius (rounded-lg/xl to rounded-2xl) also affects its
+  other use in the jazmin-wong gallery. Checked at 375, 768, 1024, 1440,
+  1920, 2560 with Playwright: no horizontal overflow, no console errors,
+  hero and video measured at exactly a 16:9 ratio with 16px (rounded-2xl)
+  corners at every width, credits box confirmed absent.
 
 ## IN PROGRESS
 - Nothing. Session ended cleanly.

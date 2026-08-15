@@ -172,7 +172,6 @@ function MetaCard({ project, hasFilm }: { project: WorkProject; hasFilm: boolean
   )
 }
 
-const heroMediaClass = 'w-full h-[220px] lg:h-[clamp(500px,55vw,1100px)]'
 const spineMediaClass = 'w-full h-[200px] lg:h-[clamp(400px,45vw,900px)]'
 
 /* One part of the case study spine (Brief, Challenge, Approach, Work), laid
@@ -180,7 +179,15 @@ const spineMediaClass = 'w-full h-[200px] lg:h-[clamp(400px,45vw,900px)]'
  * copy (and optional media) on the right. Collapses when the project
  * supplies no heading, body or media for it. anchorId lets the metadata
  * card's "Watch film" link scroll straight to the part carrying the film. */
-function SpinePart({ section, anchorId }: { section?: SpineSection; anchorId?: string }) {
+function SpinePart({
+  section,
+  anchorId,
+  mediaClassName = spineMediaClass,
+}: {
+  section?: SpineSection
+  anchorId?: string
+  mediaClassName?: string
+}) {
   if (!section || !(section.heading || section.body || section.media)) return null
   return (
     <div
@@ -206,7 +213,7 @@ function SpinePart({ section, anchorId }: { section?: SpineSection; anchorId?: s
             {section.body}
           </RevealText>
         )}
-        {section.media && <MediaRenderer item={section.media} className={spineMediaClass} />}
+        {section.media && <MediaRenderer item={section.media} className={mediaClassName} />}
       </div>
     </div>
   )
@@ -263,93 +270,9 @@ function TagList({ items }: { items: string[] }) {
   )
 }
 
-/* Credits & details footer, laid out like the story sections: a left
- * heading and a right column holding a 2-column spec list (Tools, Formats,
- * Timeline) plus the full team credit paragraph. Each of the four pieces is
- * independently optional and collapses on its own; the whole block
- * collapses when none are present. Credits renders as either a role/name
- * list or a single descriptive paragraph (creditsText), whichever the
- * project supplies. */
-function CreditsTools({ project }: { project: WorkProject }) {
-  const hasCreditsList = Boolean(project.credits && project.credits.length > 0)
-  const hasCreditsText = Boolean(project.creditsText)
-  const hasCredits = hasCreditsList || hasCreditsText
-  const hasTools = Boolean(project.tools && project.tools.length > 0)
-  const hasFormats = Boolean(project.formats && project.formats.length > 0)
-  const hasTimeline = Boolean(project.timeline)
-  const hasSpecs = hasTools || hasFormats || hasTimeline
-  if (!hasCredits && !hasSpecs) return null
-
-  const labels = content.caseStudy
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-10 border-t border-white/10 py-10">
-      <div className="md:col-span-4">
-        <RevealText
-          as="h3"
-          className="text-[clamp(24px,2.2vw,40px)] text-neutral-100 font-bold tracking-tight leading-[1.1]"
-        >
-          {labels.creditsDetailsHeading}
-        </RevealText>
-      </div>
-      <div className="md:col-span-8 flex flex-col gap-8">
-        {hasSpecs && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {hasTools && (
-              <div className="flex flex-col gap-3">
-                <RevealText className={eyebrowClass}>{labels.toolsHeading}</RevealText>
-                <TagList items={project.tools!} />
-              </div>
-            )}
-            {hasFormats && (
-              <div className="flex flex-col gap-3">
-                <RevealText className={eyebrowClass}>{labels.formatsHeading}</RevealText>
-                <TagList items={project.formats!} />
-              </div>
-            )}
-            {hasTimeline && (
-              <div className="flex flex-col gap-3">
-                <RevealText className={eyebrowClass}>{labels.timelineHeading}</RevealText>
-                <RevealText className="text-neutral-100 text-sm lg:text-base font-medium" delay={0.05}>
-                  {project.timeline}
-                </RevealText>
-              </div>
-            )}
-          </div>
-        )}
-        {hasCredits && (
-          <div className="flex flex-col gap-3">
-            <RevealText className={eyebrowClass}>{labels.teamHeading}</RevealText>
-            {hasCreditsText ? (
-              <RevealText
-                className="text-neutral-100 text-sm lg:text-base font-medium leading-[1.6] max-w-[65ch]"
-                delay={0.05}
-              >
-                {project.creditsText}
-              </RevealText>
-            ) : (
-              <ul className="flex flex-col gap-2">
-                {project.credits!.map((c) => (
-                  <li
-                    key={`${c.role}-${c.name}`}
-                    className="flex justify-between gap-4 text-neutral-100 text-sm lg:text-base font-medium"
-                  >
-                    <span className="text-neutral-400 uppercase tracking-wide">{c.role}</span>
-                    <span className="text-right">{c.name}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
 /* /work/[slug] body: a dark rounded shell, centered on wide screens, with a
  * title, a metadata card, a hero asset, and a WPP-style 2-column editorial
- * spine (heading left, story copy right) followed by credits & details. */
+ * spine (heading left, story copy right). */
 export function CaseStudy({ project }: { project: WorkProject }) {
   const spine = project.spine
   const hasSpine = Boolean(
@@ -365,7 +288,7 @@ export function CaseStudy({ project }: { project: WorkProject }) {
 
   return (
     <main className="bg-neutral-100 pt-[200px] md:pt-[clamp(128px,12vw,500px)]">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 w-full">
         <div
           data-surface="dark"
           className="relative flex flex-col items-center gap-[clamp(64px,6vw,200px)] px-3 lg:px-4 pt-[clamp(64px,10vw,128px)] pb-3 lg:pb-4 rounded-2xl lg:rounded-[20px] bg-neutral-900"
@@ -400,7 +323,20 @@ export function CaseStudy({ project }: { project: WorkProject }) {
             <MetaCard project={project} hasFilm={hasFilm} />
           </div>
 
-          {project.heroAsset && <MediaRenderer item={project.heroAsset} className={heroMediaClass} />}
+          {project.heroAsset && (
+            <div className="w-full aspect-[16/9] overflow-hidden rounded-2xl">
+              {project.heroAsset.kind === 'image' ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={project.heroAsset.src}
+                  alt={project.heroAsset.alt ?? ''}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <MediaRenderer item={project.heroAsset} className="w-full h-full" />
+              )}
+            </div>
+          )}
 
           <div className="w-full flex flex-col gap-12 lg:gap-16 2xl:gap-[clamp(64px,5vw,150px)] px-4 lg:px-5 pt-5 lg:pt-6 pb-4 lg:pb-5 rounded-lg lg:rounded-xl bg-neutral-800">
             {hasSpine && (
@@ -408,7 +344,11 @@ export function CaseStudy({ project }: { project: WorkProject }) {
                 <SpinePart section={spine?.brief} />
                 <SpinePart section={spine?.challenge} />
                 <SpinePart section={spine?.approach} />
-                <SpinePart section={spine?.work} anchorId={hasFilm ? FILM_ANCHOR_ID : undefined} />
+                <SpinePart
+                  section={spine?.work}
+                  anchorId={hasFilm ? FILM_ANCHOR_ID : undefined}
+                  mediaClassName={hasFilm ? 'w-full' : undefined}
+                />
               </div>
             )}
 
@@ -446,8 +386,6 @@ export function CaseStudy({ project }: { project: WorkProject }) {
                 <AddonBlock label={content.caseStudy.addonLabels.payoff} section={addons?.payoff} />
               </div>
             )}
-
-            <CreditsTools project={project} />
           </div>
         </div>
       </div>
