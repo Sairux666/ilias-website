@@ -270,8 +270,7 @@ function PayoffSection({
   if (!section || !(section.heading || section.body || section.video || stills.length > 0)) return null
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-10">
-      <div className="md:col-span-4 flex flex-col gap-3">
-        <RevealText className={eyebrowClass}>{label}</RevealText>
+      <div className="md:col-span-4">
         {section.heading && (
           <RevealText
             as="h3"

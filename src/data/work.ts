@@ -158,9 +158,9 @@ export const workProjects: WorkProject[] = [
     },
     addons: {
       payoff: {
-        heading: "Eight winners, eight scooters",
+        heading: "The winners in market",
         body:
-          "Winner handover films produced by the VML team, tracking scooter handovers across the campaign and closing on the master motion end frame.",
+          "Winner handover films produced by the VML team, tracking scooter deliveries across the country and closing on the campaign end frame.",
         video: "https://github.com/Sairux666/ilias-assets/releases/download/media-v1/fanta-winner.mp4",
         poster: "/portfolio/fanta/winner-cover-01.webp",
         stills: [],

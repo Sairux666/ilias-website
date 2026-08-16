@@ -278,6 +278,20 @@
   changed, layout and CSS untouched, so overflow risk at 375 to 2560px is
   unchanged from the prior sign off.
 
+- Fanta Payoff section title changed to "The winners in market" (no numbers),
+  body copy updated to match, both in src/data/work.ts. The small "PAYOFF"
+  eyebrow label above the heading removed from PayoffSection in CaseStudy.tsx.
+  Left column heading now sits flush to the top with zero top margin, right
+  column body and video player also sit flush to the top with gap-6 spacing
+  between them, matching the same WPP 2-column pattern already used by
+  SpinePart elsewhere on the page. Verified via the running dev server: new
+  heading and body text present in the rendered HTML, PAYOFF text absent,
+  `tsc --noEmit` clean. Only a text node and one wrapper div's classes
+  changed, no width/grid/padding changes, so the layout already checked clean
+  at 375, 768, 1024, 1440, 1920, 2560px is unaffected; no Playwright/browser
+  automation tool was available this session, so no new in-browser
+  screenshots were taken.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance
