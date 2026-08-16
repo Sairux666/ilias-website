@@ -55,6 +55,7 @@ export type AddonSection = {
    * images, rendered in the WPP 2-column layout (heading left, body + video
    * + stills right) instead of the generic stacked add-on layout. */
   video?: string
+  poster?: string
   stills?: MediaItem[]
 }
 
@@ -160,7 +161,8 @@ export const workProjects: WorkProject[] = [
         heading: "Eight winners, eight scooters",
         body:
           "Winner handover films produced by the VML team, tracking scooter handovers across the campaign and closing on the master motion end frame.",
-        video: "https://github.com/Sairux666/ilias-website/releases/download/assets/fanta-winner-01.mp4",
+        video: "https://github.com/Sairux666/ilias-assets/releases/download/media-v1/fanta-winner.mp4",
+        poster: "/portfolio/fanta/winner-cover-01.webp",
         stills: [],
       },
     },

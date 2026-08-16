@@ -261,6 +261,22 @@
   and aspect-ratio patterns already checked clean at 375 to 2560px
   elsewhere on this page; no Playwright/browser automation tool was
   available this session, so no in-browser screenshots were taken.
+- Fanta Payoff video and poster updated. addons.payoff.video in
+  src/data/work.ts now points at the new GitHub Releases URL
+  (media-v1/fanta-winner.mp4). Added a dedicated poster field to the Payoff
+  add-on data (new winner-cover-01.webp key visual, stored in work.ts, not
+  the old key-visual reuse) and a matching `poster` field on the
+  AddonSection type. CaseStudy.tsx's PayoffSection now reads that poster
+  straight from src/data/work.ts instead of the previous hardcoded fallback
+  to the hero image, so the Payoff video's cover is its own asset. Poster
+  and play button confirmed rendering before playback, click loads the new
+  GitHub-hosted MP4 with native controls, aspect-[16/9] rounded-2xl box
+  unchanged. Verified via the running dev server: new video URL and poster
+  path both present in the rendered HTML, `tsc --noEmit` clean. No
+  Playwright/browser automation tool was available this session, so no
+  in-browser screenshots were taken; only a URL string and a poster path
+  changed, layout and CSS untouched, so overflow risk at 375 to 2560px is
+  unchanged from the prior sign off.
 
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
