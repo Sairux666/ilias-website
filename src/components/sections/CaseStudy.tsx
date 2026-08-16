@@ -255,6 +255,64 @@ function AddonBlock({ label, section }: { label: string; section?: AddonSection 
   )
 }
 
+/* Payoff add-on: WPP 2-column layout matching SpinePart (heading left, body
+ * copy + self-hosted video player + optional stills right), instead of the
+ * generic stacked AddonBlock used by the other add-on slots. Collapses when
+ * the project supplies no heading, body, video or stills for it. */
+function PayoffSection({
+  label,
+  section,
+  posterSrc,
+}: {
+  label: string
+  section?: AddonSection
+  posterSrc: string
+}) {
+  const stills = section?.stills ?? []
+  if (!section || !(section.heading || section.body || section.video || stills.length > 0)) return null
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-10">
+      <div className="md:col-span-4 flex flex-col gap-3">
+        <RevealText className={eyebrowClass}>{label}</RevealText>
+        {section.heading && (
+          <RevealText
+            as="h3"
+            className="text-[clamp(24px,2.2vw,40px)] text-neutral-100 font-bold tracking-tight leading-[1.1]"
+            delay={0.05}
+          >
+            {section.heading}
+          </RevealText>
+        )}
+      </div>
+      <div className="md:col-span-8 flex flex-col gap-6">
+        {section.body && (
+          <RevealText
+            className="text-[clamp(16px,1.1vw,20px)] text-neutral-300 font-medium leading-[1.6] max-w-[65ch]"
+            delay={0.1}
+          >
+            {section.body}
+          </RevealText>
+        )}
+        {section.video && (
+          <VideoPlayer
+            src={section.video}
+            poster={posterSrc}
+            alt={section.heading ?? label}
+            className="aspect-[16/9] w-full rounded-2xl overflow-hidden"
+          />
+        )}
+        {stills.length > 0 && (
+          <div className="flex flex-col gap-4 lg:gap-5">
+            {stills.map((m, i) => (
+              <MediaRenderer key={i} item={m} className={spineMediaClass} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function TagList({ items }: { items: string[] }) {
   return (
     <ul className="flex gap-1.5 2xl:gap-2 flex-wrap">
@@ -285,8 +343,13 @@ export function CaseStudy({ project }: { project: WorkProject }) {
   const addons = project.addons
   const hasAddons = Boolean(
     addons &&
-      Object.values(addons).some((a) => a && (a.heading || a.body || (a.media && a.media.length > 0)))
+      Object.values(addons).some(
+        (a) =>
+          a &&
+          (a.heading || a.body || (a.media && a.media.length > 0) || a.video || (a.stills && a.stills.length > 0))
+      )
   )
+  const payoffPosterSrc = project.heroAsset && project.heroAsset.kind === 'image' ? project.heroAsset.src : ''
 
   return (
     <main className="bg-neutral-100 pt-[200px] md:pt-[clamp(128px,12vw,500px)]">
@@ -388,7 +451,11 @@ export function CaseStudy({ project }: { project: WorkProject }) {
                   <AddonBlock label={content.caseStudy.addonLabels.storyboards} section={addons?.storyboards} />
                   <AddonBlock label={content.caseStudy.addonLabels.ratioRebuilds} section={addons?.ratioRebuilds} />
                   <AddonBlock label={content.caseStudy.addonLabels.oohInMarket} section={addons?.oohInMarket} />
-                  <AddonBlock label={content.caseStudy.addonLabels.payoff} section={addons?.payoff} />
+                  <PayoffSection
+                    label={content.caseStudy.addonLabels.payoff}
+                    section={addons?.payoff}
+                    posterSrc={payoffPosterSrc}
+                  />
                 </div>
               )}
             </div>

@@ -246,6 +246,22 @@
   2560px is unchanged, but a manual look in-browser is recommended before
   calling this fully signed off.
 
+- Fanta case study Payoff section wired up. addons.payoff in src/data/work.ts
+  now holds the heading "Eight winners, eight scooters", the handover body
+  copy, a self-hosted video URL pointing at the GitHub Releases CDN
+  (fanta-winner-01.mp4), and an empty stills array so it stays hidden until
+  real still images are added. CaseStudy.tsx renders Payoff with its own
+  2-column WPP layout (heading left, body plus the click-to-play
+  VideoPlayer component right, aspect-[16/9] rounded-2xl), separate from the
+  generic stacked layout the other add-on slots use, sitting after the main
+  story sections and before the Next Project nav. Video poster reuses the
+  existing key visual image (no new poster asset added). Verified via the
+  running dev server: heading, body and the fanta-winner-01.mp4 URL all
+  present in the rendered HTML. Classes reuse the same relative-unit grid
+  and aspect-ratio patterns already checked clean at 375 to 2560px
+  elsewhere on this page; no Playwright/browser automation tool was
+  available this session, so no in-browser screenshots were taken.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance
