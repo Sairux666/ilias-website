@@ -149,6 +149,11 @@
   taken; a manual look in-browser is recommended before calling this fully
   signed off.
 
+- Fanta Payoff body copy updated to "One of several handover films produced
+  with the VML team as scooters were delivered across the country, closing
+  on the campaign motion end frame." in src/data/work.ts. Heading, video and
+  poster unchanged.
+
 ## IN PROGRESS
 - Case study page now matches itsjay.us edge-to-edge width. Outer wrapper
   around the dark card changed from a centered max-w-[1440px] box to a full
