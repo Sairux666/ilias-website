@@ -150,7 +150,7 @@ export const workProjects: WorkProject[] = [
       work: {
         heading: "Fifteen seconds, three steps",
         body:
-          "Frames were designed as stills, then animated with Seedance 2.0. Type, UI and prize elements animated in After Effects on top. AI handled camera moves and liquid. It did not make the design decisions, and it is not the reason the film works.",
+          "Frames were designed as stills, then animated with Seedance 2.0 with type, UI, and prize elements animated in After Effects on top. A late retail price update came in after renders were locked: rather than missing the delivery deadline on a full re-render, the new bottle badge was planar-tracked and composited manually in After Effects over the moving bottle.",
         media: {
           kind: "hosted-video",
           src: "https://github.com/Sairux666/ilias-assets/releases/download/media-v1/fanta-promo-campaign-15sec-film.mp4",

@@ -347,6 +347,11 @@
   automation tool was available this session, so no new in-browser
   screenshots were taken.
 
+- Fanta case study Section 04 ("Fifteen seconds, three steps") body copy
+  updated in src/data/work.ts to add the retail price update detail: the
+  new bottle badge was planar-tracked and composited manually in After
+  Effects after renders were locked, rather than doing a full re-render.
+
 ## TO DO, IN ORDER
 1. Fanta project page. Data is in, page renders correctly at all
    breakpoints in the new WPP-style layout. Still needs final clearance
