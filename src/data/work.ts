@@ -51,9 +51,6 @@ export type AddonSection = {
   heading?: string
   body?: string
   media?: MediaItem[]
-  /* 'grid' renders media as a 2-column grid instead of the default stacked
-   * full-width rows. */
-  layout?: 'stack' | 'grid'
   /* Autoplaying, muted, looping background video shown above the media
    * (e.g. an animated social feed loop). */
   loopVideo?: string
@@ -179,7 +176,6 @@ export const workProjects: WorkProject[] = [
         heading: "Billboard distance to street level",
         body:
           "Rolled out across Casablanca on urban billboards and digital street totems. Weights, contrast, and typography were set so the three steps remain instantly readable from a moving car and on foot.",
-        layout: "grid",
         media: [
           {
             kind: "image",
@@ -198,7 +194,6 @@ export const workProjects: WorkProject[] = [
         body:
           "Rebuilt across 16:9, 1:1, and 9:16 rather than scaled down. Extended into animated social feed loops, carousel posts, and a full YouTube channel takeover.",
         loopVideo: "https://github.com/Sairux666/ilias-assets/releases/download/media-v1/animated-instagram.mp4",
-        layout: "grid",
         media: [
           {
             kind: "image",

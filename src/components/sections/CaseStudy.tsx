@@ -172,7 +172,7 @@ function MetaCard({ project, hasFilm }: { project: WorkProject; hasFilm: boolean
   )
 }
 
-const spineMediaClass = 'w-full h-[200px] lg:h-[clamp(400px,45vw,900px)]'
+const spineMediaClass = 'w-full aspect-[16/9]'
 
 /* One part of the case study spine (Brief, Challenge, Approach, Work), laid
  * out as a WPP-style 2-column editorial block: heading on the left, story
@@ -244,32 +244,25 @@ function AddonBlock({ label, section }: { label: string; section?: AddonSection 
           {section.body}
         </RevealText>
       )}
-      {section.loopVideo && (
-        <div className="w-full rounded-2xl overflow-hidden">
-          <video
-            src={section.loopVideo}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-auto block"
-          />
+      {(section.loopVideo || hasMedia) && (
+        <div className="flex flex-col gap-6">
+          {section.loopVideo && (
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-neutral-800">
+              <video
+                src={section.loopVideo}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+            </div>
+          )}
+          {section.media?.map((m, i) => (
+            <MediaRenderer key={i} item={m} className={spineMediaClass} />
+          ))}
         </div>
       )}
-      {hasMedia &&
-        (section.layout === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
-            {section.media!.map((m, i) => (
-              <MediaRenderer key={i} item={m} className={spineMediaClass} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4 lg:gap-5">
-            {section.media!.map((m, i) => (
-              <MediaRenderer key={i} item={m} className={spineMediaClass} />
-            ))}
-          </div>
-        ))}
     </div>
   )
 }
@@ -318,7 +311,7 @@ function PayoffSection({
           />
         )}
         {stills.length > 0 && (
-          <div className="flex flex-col gap-4 lg:gap-5">
+          <div className="flex flex-col gap-6">
             {stills.map((m, i) => (
               <MediaRenderer key={i} item={m} className={spineMediaClass} />
             ))}
@@ -440,24 +433,14 @@ export function CaseStudy({ project }: { project: WorkProject }) {
               )}
 
               {project.gallery.length > 0 && (
-                <div className="flex flex-col gap-4 lg:gap-5">
+                <div className="flex flex-col gap-6">
                   {project.gallery.map((row, i) =>
                     row.layout === 'full' ? (
-                      <MediaRenderer
-                        key={i}
-                        item={row.items[0]}
-                        className="w-full h-[200px] lg:h-[clamp(600px,57vw,1200px)]"
-                      />
+                      <MediaRenderer key={i} item={row.items[0]} className={spineMediaClass} />
                     ) : (
-                      <div key={i} className="flex gap-4 lg:gap-5">
-                        <Media
-                          item={row.items[0]}
-                          className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
-                        />
-                        <Media
-                          item={row.items[1]}
-                          className="w-1/2 h-[160px] lg:h-[clamp(600px,40vw,1200px)]"
-                        />
+                      <div key={i} className="flex flex-col md:flex-row gap-6">
+                        <Media item={row.items[0]} className="w-full md:w-1/2 aspect-[16/9]" />
+                        <Media item={row.items[1]} className="w-full md:w-1/2 aspect-[16/9]" />
                       </div>
                     )
                   )}

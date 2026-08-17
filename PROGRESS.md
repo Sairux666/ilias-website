@@ -283,6 +283,28 @@
   changed, layout and CSS untouched, so overflow risk at 375 to 2560px is
   unchanged from the prior sign off.
 
+- Case study media locked to a true 16:9 everywhere and stacked vertically.
+  Every media container on /work/[slug] previously used fixed pixel heights
+  (h-[200px], clamp(400px,45vw,900px), clamp(600px,57vw,1200px)), which
+  overrode the aspect ratio and squashed images. All of them now use
+  w-full aspect-[16/9] instead, so height derives from width at every
+  breakpoint. The 2-column side by side grid on the OOH and social sections
+  is gone: dooh-01/dooh-02 and social-media-01/youtube-banner now stack one
+  above the other, full width, gap-6. The animated Instagram loop now sits in
+  its own w-full aspect-[16/9] rounded-2xl box with object-cover, in the same
+  vertical stack as the two images below it, so section 06 reads video,
+  image, image evenly spaced. The now unused `layout: 'grid'` option was
+  removed from the AddonSection type and from src/data/work.ts. Legacy
+  gallery rows (used by the 6 placeholder projects, not Fanta) also lost
+  their fixed heights: full rows are now 16:9, and paired rows stack to one
+  column below md and sit 2-up at 16:9 above it. Note this visibly changes
+  the placeholder project pages, their tall website screenshots now crop to
+  16:9. `tsc --noEmit` clean, /work/fanta and /work/jazmin-wong both return
+  200 with zero fixed heights left in the rendered HTML. Layout is now
+  percentage widths plus aspect-ratio only, no fixed px widths anywhere, so
+  375 to 2560px scales without overflow; no Playwright/browser automation
+  tool was available this session, so no in-browser screenshots were taken.
+
 - Fanta case study expanded to the full campaign narrative. Role pills
   reordered to Art Direction, Key Visuals, Campaign Design, OOH & DOOH,
   Retail & POS, Motion Design, AI Animation, Adaptations. Three new sections
