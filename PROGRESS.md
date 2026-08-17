@@ -283,6 +283,27 @@
   changed, layout and CSS untouched, so overflow risk at 375 to 2560px is
   unchanged from the prior sign off.
 
+- Fanta case study expanded to the full campaign narrative. Role pills
+  reordered to Art Direction, Key Visuals, Campaign Design, OOH & DOOH,
+  Retail & POS, Motion Design, AI Animation, Adaptations. Three new sections
+  added in src/data/work.ts: Storyboard (full width storyboard.webp),
+  OOH In Market (dooh-01.webp and dooh-02.webp as a 2-column grid), and a
+  social/digital ecosystem section under the existing Ratio Rebuilds slot
+  (autoplaying silent loop of the animated Instagram video, hosted on GitHub
+  Releases since the local file is 5.7MB, over the 3MB video limit, plus a
+  2-column grid of social-media-01.webp and youtube-banner.webp). Brief,
+  Challenge, the 15 second film and the Payoff section already matched the
+  full campaign copy, no changes needed there. CaseStudy.tsx's add-on block
+  gained an optional 2-column grid layout and an autoplaying loop video slot,
+  and the add-on render order was changed to Storyboards, OOH In Market,
+  Ratio Rebuilds, Payoff, so the page reads Brief, Challenge, Approach, Film,
+  OOH, Social, Payoff. `tsc --noEmit` clean, all new asset paths and the new
+  section copy confirmed present in the rendered HTML from the dev server.
+  New layout patterns reuse the same md:grid-cols-2 and clamp-height media
+  classes already checked clean at 375 to 2560px elsewhere on this page; no
+  Playwright/browser automation tool was available this session, so no new
+  in-browser screenshots were taken.
+
 - Fanta Payoff section title changed to "The winners in market" (no numbers),
   body copy updated to match, both in src/data/work.ts. The small "PAYOFF"
   eyebrow label above the heading removed from PayoffSection in CaseStudy.tsx.

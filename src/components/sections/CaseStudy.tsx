@@ -223,7 +223,7 @@ function SpinePart({
  * Market, Payoff). Collapses when the project supplies none of it. */
 function AddonBlock({ label, section }: { label: string; section?: AddonSection }) {
   const hasMedia = Boolean(section?.media && section.media.length > 0)
-  if (!section || !(section.heading || section.body || hasMedia)) return null
+  if (!section || !(section.heading || section.body || hasMedia || section.loopVideo)) return null
   return (
     <div className="flex flex-col gap-6 lg:gap-8">
       <RevealText className={eyebrowClass}>{label}</RevealText>
@@ -244,13 +244,32 @@ function AddonBlock({ label, section }: { label: string; section?: AddonSection 
           {section.body}
         </RevealText>
       )}
-      {hasMedia && (
-        <div className="flex flex-col gap-4 lg:gap-5">
-          {section.media!.map((m, i) => (
-            <MediaRenderer key={i} item={m} className={spineMediaClass} />
-          ))}
+      {section.loopVideo && (
+        <div className="w-full rounded-2xl overflow-hidden">
+          <video
+            src={section.loopVideo}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-auto block"
+          />
         </div>
       )}
+      {hasMedia &&
+        (section.layout === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
+            {section.media!.map((m, i) => (
+              <MediaRenderer key={i} item={m} className={spineMediaClass} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 lg:gap-5">
+            {section.media!.map((m, i) => (
+              <MediaRenderer key={i} item={m} className={spineMediaClass} />
+            ))}
+          </div>
+        ))}
     </div>
   )
 }
@@ -343,7 +362,12 @@ export function CaseStudy({ project }: { project: WorkProject }) {
       Object.values(addons).some(
         (a) =>
           a &&
-          (a.heading || a.body || (a.media && a.media.length > 0) || a.video || (a.stills && a.stills.length > 0))
+          (a.heading ||
+            a.body ||
+            (a.media && a.media.length > 0) ||
+            a.loopVideo ||
+            a.video ||
+            (a.stills && a.stills.length > 0))
       )
   )
   return (
@@ -444,8 +468,8 @@ export function CaseStudy({ project }: { project: WorkProject }) {
                 <div className="flex flex-col gap-16 lg:gap-24">
                   <AddonBlock label={content.caseStudy.addonLabels.aiPipeline} section={addons?.aiPipeline} />
                   <AddonBlock label={content.caseStudy.addonLabels.storyboards} section={addons?.storyboards} />
-                  <AddonBlock label={content.caseStudy.addonLabels.ratioRebuilds} section={addons?.ratioRebuilds} />
                   <AddonBlock label={content.caseStudy.addonLabels.oohInMarket} section={addons?.oohInMarket} />
+                  <AddonBlock label={content.caseStudy.addonLabels.ratioRebuilds} section={addons?.ratioRebuilds} />
                   <PayoffSection
                     label={content.caseStudy.addonLabels.payoff}
                     section={addons?.payoff}
