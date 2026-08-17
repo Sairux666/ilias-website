@@ -154,6 +154,13 @@
   on the campaign motion end frame." in src/data/work.ts. Heading, video and
   poster unchanged.
 
+- Fanta 15 second film URL updated. spine.work.media.src in src/data/work.ts
+  now points at the new GitHub Releases URL
+  (media-v1/fanta-promo-campaign-15sec-film.mp4). Poster unchanged. The
+  existing self-hosted VideoPlayer component already streams remote MP4 URLs
+  with a click-to-play poster and native controls, no component changes
+  needed.
+
 ## IN PROGRESS
 - Case study page now matches itsjay.us edge-to-edge width. Outer wrapper
   around the dark card changed from a centered max-w-[1440px] box to a full

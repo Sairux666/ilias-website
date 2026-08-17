@@ -153,7 +153,7 @@ export const workProjects: WorkProject[] = [
           "Frames were designed as stills, then animated with Seedance 2.0. Type, UI and prize elements animated in After Effects on top. AI handled camera moves and liquid. It did not make the design decisions, and it is not the reason the film works.",
         media: {
           kind: "hosted-video",
-          src: "/portfolio/fanta/fanta-promo-campaign-15sec-film.mp4",
+          src: "https://github.com/Sairux666/ilias-assets/releases/download/media-v1/fanta-promo-campaign-15sec-film.mp4",
           poster: "/portfolio/fanta/fanta-promo-campaign-kv.webp",
           alt: "Fanta Promo Campaign film, fifteen seconds, three steps",
         },
